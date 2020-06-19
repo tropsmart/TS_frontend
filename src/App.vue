@@ -6,7 +6,7 @@
       clipped
     >
       <v-list dense>
-        <v-list-item link>
+        <v-list-item link @click="landingPage">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
@@ -22,7 +22,7 @@
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item>
+        <v-list-item link  @click="getTodos">
           <v-list-item-action>
             <v-icon>mdi-account-check</v-icon>
           </v-list-item-action>
@@ -33,8 +33,8 @@
       </v-list>
     </v-navigation-drawer>
         <v-content fluid>
-     <router-view/>
-    </v-content>
+        <router-view/>
+      </v-content>
 
     <div class="v-content" fluid data-booted="true" style="padding: 56px 0xp 36px;">
     <v-app-bar
@@ -43,20 +43,28 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="secondary--text" style="text-style:bold"></v-toolbar-title>
+      <v-card-title>
+                    <span class="headline">TropSmart</span>
+                  </v-card-title>
       <v-spacer></v-spacer>
-     <v-btn
-        text
-        color="success" :to="{name: 'SignUp'}"
+      <v-btn
+        class="ml-5"
+        dark
+        large
+        color="#007BFF" :to="{name: 'SignUp'}"
       >
         <span class="mr-2" >Registrar</span>
         <v-icon>mdi-account</v-icon>
       </v-btn>
 
       <v-btn
-      text
+      class="ml-5"
+      dark
+      large
+      color="#007BFF"
       :to="{name: 'SignIn'}"
       >
-      <span class="mr-2 ">Iniciar Sesion</span>
+      <span class="mr-2 ">Ingresar</span>
       <v-icon>mdi-login</v-icon>
       </v-btn>
     </v-app-bar>
@@ -80,6 +88,17 @@
     created () {
       this.$vuetify.theme.light = true
     },
+    mounted(){
+      console.log('Hola mundo desde mounted')
+    },
+    methods:{
+        getTodos(){
+          this.$router.push('/users');
+        },
+        landingPage(){
+          this.$router.push('/');
+        }
+    }
   }
 </script>
 

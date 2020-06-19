@@ -1,14 +1,21 @@
 <template>
-    <v-container>
-        <h1>This is a main menu profile</h1>
-        <h2>Here you can add some information about user and you can try to find another drivers to ask for services</h2>
-        <h2>Also you can arrive and see the cargoes status for you journeys</h2>
-        <h3>You can do operations like profile, cusomization , see payment method, mainmenu,etc,etc,etc</h3>
-    </v-container>
+    <v-app id="inspire">
+        <v-content>
+            <v-container class="fill-height fluid">
+                    
+                <v-btn class="ma-5" dark large color="skyblue" :to="{name: 'Cargoes'}">Agregar cargo</v-btn>
+                <v-btn class="ma-5" dark large color="success" :to="{name: 'Favorites'}">Lista de Favoritos</v-btn>
+                <v-btn class="ma-5" dark large color="error" :to="{name: 'Blockeds'}">Lista de bloqueados</v-btn>
+                <v-btn class="ma-5" dark large color="purple">Lista de transacciones</v-btn>
+            </v-container>
+        </v-content>   
+    </v-app>
 </template>
 
 <script>
 export default {
-    
+    data: () => ({
+        valid: false
+    })
 }
 </script>

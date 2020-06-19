@@ -1,11 +1,12 @@
 {
-  "name": "tsappwebfe",
+  "name": "ts-appweb-fe",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "start": "node server.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.28",
@@ -15,6 +16,7 @@
     "@mdi/font": "^5.3.45",
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "express": "^4.17.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",

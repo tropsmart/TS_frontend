@@ -1,105 +1,111 @@
 <template>
-  <v-container display: inline-block align="center">
+  <v-app id="inspire">
+    <v-content>
+      <v-container class ="fill-height" fluid>
+        <v-row align="center" justify="center">
+          <v-col cols="12" sm=8 md=4>
+            <v-card class="elevation-12">
+              <v-toolbar dark color="skyblue" flat>
+                <v-toolbar-title>Registrarse</v-toolbar-title>
+              </v-toolbar>
+              <v-card-text>
+                <v-form ref="form" v-model="valid" lazy-validation>
+                  <v-text-field
+                    label="Nombre"
+                    name="firstName"
+                    v-model="signUpInput.firstName"
+                    prepend-icon="mdi-account-plus-outline"
+                    type="text"
+                    :counter="10"
+                    :rules="nameRulesFN"
+                    required
+                    ></v-text-field>
 
-    <v-form
-      ref="form"
-      v-model="valid"
-      lazy-validation
-    >
-
-      <v-text-field
-        v-model="FirstName"
-        :counter="10"
-        :rules="nameRulesFN"
-        label="Name"
-        required
-      ></v-text-field>
-
-      <v-text-field
-        v-model="LastName"
-        :counter="10"
-        :rules="nameRulesLN"
-        label="Apellidos"
-        required
-      ></v-text-field>
-
-      <v-text-field
-        v-model="email"
-        :rules="emailRules"
-        label="Correo"
-        required
-      ></v-text-field>
-
-      <v-text-field
-        v-model="password"
-        :rules="passwordRules"
-        label="Contraseña"
-        required
-        type="password"
-        >
-      </v-text-field>
-
-      <v-select
-        v-model="select"
-        :items="items"
-        :rules="[v => !!v || 'Item is required']"
-        label="Tipo de usuario"
-        required
-      ></v-select>
-
-      <v-checkbox
-        v-model="checkbox"
-        :rules="[v => !!v || 'You must agree to continue!']"
-        label="Do you agree?"
-        required
-      ></v-checkbox>
-
-      <v-btn
-        :disabled="!valid"
-        color="success"
-        class="mr-4"  
-        @click="validate"
-      >
-        Validate
-      </v-btn>
-
-      <v-btn
-        color="error"
-        class="mr-4"
-        @click="reset"
-      >
-        Reset Form
-      </v-btn>
-
-      <v-btn
-        color="warning"
-        @click="resetValidation"
-      >
-        Reset Validation
-      </v-btn>
-    </v-form>
-  </v-container>
+                  <v-text-field
+                    label="Apellidos"
+                    name="lastName"
+                    v-model="signUpInput.lastName"
+                    :counter="10"
+                    :rules="nameRulesLN"
+                    prepend-icon="mdi-account-plus-outline"
+                    type="text"
+                    required
+                    ></v-text-field>
+                  <v-text-field
+                    label="Correo"
+                    name="email"
+                    v-model="signUpInput.email"
+                    :rules="emailRules"
+                    prepend-icon="mdi-email-check-outline"
+                    type="email"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    label="Contraseña"
+                    name="password"
+                    v-model="signUpInput.password"
+                    :rules="passwordRules"
+                    prepend-icon="mdi-form-textbox-password"
+                    type="password"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    lavel="Teléfono"
+                    name="phone"
+                    v-model="signUpInput.phone"
+                    :rules="phoneRules"
+                    prepend-icon="mdi-phone"
+                    type="number"
+                    required
+                    ></v-text-field>
+                  <v-select
+                    v-model="select"
+                    :items="items"
+                    :rules="[v => !!v || 'Item is required']"
+                    label="Tipo de usuario"
+                    prepend-icon="mdi-glasses"
+                    return-object @change="passSelection(select)"
+                    required
+                  ></v-select>
+                  <v-checkbox
+                    v-model="checkbox"
+                    :rules="[v => !!v || 'You must agree to continue!']"
+                    label="Do you agree?"
+                    required
+                ></v-checkbox>
+                </v-form>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn  dark large color="skyblue" @click="validate">Registrarse</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
+  import TsDataService from '@/services/TsDataService'
   export default {
+    
     data: () => ({
+      roleSelected :"",
+      valid: false,
       validFirstName: true,
-      nameFirstName: 'FirstName',
       nameRulesFN: [
         v => !!v || 'Nombre es requerido',
-        v => (v && v.length <= 10) || 'Nombre debe contener no mas de 10 caracteres',
+        v => (v && v.length <= 20) || 'Nombre debe contener no mas de 10 caracteres',
       ],
       validLastName: true,
-      nameLastName: 'LastName',
       nameRulesLN: [
         v => !!v || 'Apellido es requerido',
-        v => (v && v.length <= 10) || 'Apellidos debe contener no mas de 10 caracteres',
-      ]
-      ,
-      email: '',
+        v => (v && v.length <= 20) || 'Apellidos debe contener no mas de 10 caracteres',
+      ],
       emailRules: [
-        v => !!v || 'Correo',
+        v => !!v || 'Correo es requerido',
         v => /.+@.+\..+/.test(v) || 'Correo must be valid',
       ],
       password: '',
@@ -107,22 +113,51 @@
          v => (v && v.length <= 16 && v.length >= 6) || 'La contraseña debe tener entre 6 y 16',
       ],
       select: null,
+      phoneRules: [
+        v => !!v || 'Teléfono teléfonico es requerido',
+        v => (v && v.length == 9) || 'Debe ser un número valido',
+      ],
       items: [
         'Cliente',
         'Driver',
       ],
-
+      checkbox: false,
+      lazy: false,
+      signUpInput : {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        phone: '',
+        discriminator: 0
+      }
     }),
     methods: {
-    validate () {
-      this.$refs.form.validate()
+      validate () {
+        if (this.$refs.form.validate())
+        {
+          if(this.roleSelected == "Customer")
+            this.signUpInput.discriminator = 1
+          else
+          this.signUpInput.discriminator = 2
+          TsDataService.signUp(this.signUpInput)
+          .then(response => {
+            console.log(response.data);
+          })
+    
+        }
+        else
+          this.roleSelected = "Falta validar"
+      },
+      reset () {
+        this.$refs.form.reset()
+      },
+      resetValidation () {
+        this.$refs.form.resetValidation()
+      },
+      passSelection(data) {
+        this.roleSelected = data
+      }
     },
-    reset () {
-      this.$refs.form.reset()
-    },
-    resetValidation () {
-      this.$refs.form.resetValidation()
-    },
-  },
   }
 </script>

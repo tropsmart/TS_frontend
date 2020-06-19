@@ -4,7 +4,7 @@
             <div v-for="article in articles" :key="article.title">
                 <v-card class="my-3" hover data-aos="zoom-in" data-aos-easing="ease">
                     <v-img height="350px" v-bind:src="article.urlToImage"></v-img>
-                    <v-container fill-height fluid>
+                    <v-container name="jaja" fill-height fluid>
                         <v-layout>
                             <v-flex xs12 align-end d-flex>
                                 <span class="headline">{{ article.title }}</span>

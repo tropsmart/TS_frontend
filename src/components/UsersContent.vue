@@ -69,6 +69,7 @@
         small
         fab
         @click="deleteItem(item)"
+        left="left"
       >
         <v-icon>mdi-delete</v-icon>
       </v-btn>

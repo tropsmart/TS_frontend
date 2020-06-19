@@ -16,30 +16,20 @@
           >
             <v-card class="elevation-12">
               <v-toolbar
-                color="primary"
+              dark
+                color="skyblue"
                 flat
               >
-                <v-toolbar-title>Login form</v-toolbar-title>
+                <v-toolbar-title>Iniciar Sesión</v-toolbar-title>
                 <v-spacer></v-spacer>
-                <v-tooltip bottom>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      :href="source"
-                      icon
-                      large
-                      target="_blank"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-code-tags</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>Source</span>
-                </v-tooltip>
+                
               </v-toolbar>
               <v-card-text>
-                <v-form>
+                <v-form ref="form" v-model="valid" lazy-validation>
                   <v-text-field
-                    label="Login"
+                    v-model="signInInput.email"
+                    :rules="[v => !!v || 'Ingrese un email']"
+                    label="Correo"
                     name="login"
                     prepend-icon="mdi-account"
                     type="text"
@@ -47,7 +37,9 @@
 
                   <v-text-field
                     id="password"
-                    label="Password"
+                    v-model="signInInput.password"
+                    :rules="[v => !!v || 'Ingrese una contraseña']"
+                    label="Contraseña"
                     name="password"
                     prepend-icon="mdi-lock"
                     type="password"
@@ -56,7 +48,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary">Login</v-btn>
+                <v-btn dark large color="skyblue" @click="validate">Entrar</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -67,9 +59,35 @@
 </template>
 
 <script>
+import TsDataService from '@/services/TsDataService'
   export default {
+    data: () => ({
+      valid:false,
+      signInInput : { 
+        email: '',
+        password: ''
+      }
+    }),
     props: {
       source: String,
     },
+    methods: {
+      validate () {
+        if(this.$refs.form.validate())
+        {
+
+          TsDataService.SignIn(this.signInInput)
+          .then(response => {
+            if(response.data.success==true)
+            {
+              alert("Inicio sesion correctamente")
+              this.$router.push("/profile")
+            }
+            else
+              alert("Credenciales no validas")
+          })
+        }
+      }
+    }
   }
 </script>

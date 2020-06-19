@@ -4,8 +4,13 @@ import Home from '../views/Home.vue'
 import SideMenu from '../components/SideMenu.vue'
 import MainMenu from '../components/MainMenu.vue'
 import UsersContent from '../components/UsersContent.vue'
+import UsersListContent from '../components/UserList.Content.vue'
 import SignUp from '../components/SignUp.vue'
 import SignIn from '../components/SignIn.vue'
+import Cargoes from '../components/Cargoes.vue'
+import DriverProfile from '../components/DriverProfile'
+import Favorites from '../components/Favorites'
+import Blockeds from '../components/Blockeds'
 
 Vue.use(VueRouter)
 
@@ -26,9 +31,14 @@ Vue.use(VueRouter)
     component: MainMenu
   },
   {
-    path: '/users',
+    path: '/users-unit',
     name: 'UsersContent',
     component: UsersContent
+  },
+  {
+    path: '/users',
+    name: 'UsersListContent',
+    component: UsersListContent
   },
   {
     path: '/sign-up',
@@ -39,6 +49,26 @@ Vue.use(VueRouter)
     path: '/sign-in',
     name: 'SignIn',
     component: SignIn
+  },
+  {
+    path: '/cargoes',
+    name: 'Cargoes',
+    component: Cargoes
+  },
+  {
+    path: '/driver/id',
+    name: 'Drivers',
+    component: DriverProfile
+  },
+  {
+    path: '/favorites',
+    name: 'Favorites',
+    component : Favorites
+  },
+  {
+    path: '/blockeds',
+    name: 'Blockeds',
+    component : Blockeds
   },
   {
     path: '/about',
