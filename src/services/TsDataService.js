@@ -12,9 +12,8 @@ class TsDataService {
         return http.post(`/api/authentication/sign-in/`,JSON.stringify(data));
     }
 
-    
-    //Users
 
+    //Users
     getAllUsers() {
         return http.get("/api/users");
     }
