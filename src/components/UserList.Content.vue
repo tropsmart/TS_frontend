@@ -4,85 +4,104 @@
     :items="users"
     sort-by="calories"
     class="elevation-1"
-    >
-
+     @click:row="rowClick">
+                <v-overlay :value="overlay">
+                <v-progress-circular indeterminate size="64"></v-progress-circular>
+                </v-overlay>
     <template v-slot:top>
         <v-toolbar flat color="white">
-            <v-toolbar-title>Usuarios Registrados</v-toolbar-title>
-            <v-divider
-                class="mx-4"
-                inset
-                vertical
-            ></v-divider>
+            <v-toolbar-title>Transportistas disponibles</v-toolbar-title>
+            <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="500px">
-                <template v-slot:activator="{ on }">
-                    <v-btn color="primary" dark class="mb-2" v-on="on">Nuevo Usuario</v-btn>
-        </template>
-        <v-card>
-        <v-card-title>
-         <span class="headline">{{ formTitle }}</span>
-        </v-card-title>
-        <v-card-text>
-            <v-container>
-                <v-row>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.email" label="Correo"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.role" label="Rol"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.firstName" label="Nombres"></v-text-field>
-                  </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.lastName" label="Apellidos"></v-text-field>
-                  </v-col>
-                  <!--<v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.role" label="Rol"></v-text-field>
-                  </v-col>-->
-                            </v-row>
-                        </v-container>
-                    </v-card-text>
+               
 
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-                        <v-btn color="blue darken-1" text @click="save">Guardar</v-btn>
+    <!-- DIALOG FOR INFORMATION FOR DRIVERS IN ANOTHER COMPONENT ===========================================================================================-->
+            
+            <v-dialog v-model="dialog" max-width="500px">
+             
+                <v-card style="border-radius:10px;">
+                    <v-card style="border-radius:10px;">
+                        <v-img height="250" src="https://besthqwallpapers.com/Uploads/10-11-2019/110694/thumb2-blue-stone-background-stone-texture-grunge-blue-background-creative-blue-texture.jpg">
+                            <v-row justify="space-around">
+                                <v-avatar size="150" class="ma-10">
+                                    <v-img height="150" src="https://thispersondoesnotexist.com/image"></v-img>
+                                </v-avatar>
+                            </v-row>
+                        </v-img>
+                    </v-card>
+             
+                    <v-card-title align="center" style="text-align: center; display:block">
+                        <div class="text-xs-center"> {{ formTitle }}</div>
+                    </v-card-title>
+                    <v-container align="center" style="padding: 5px; text-align: center;">
+                        <v-card-text style="padding: 7px;"><div>Correo : {{ currentDriver.email }}</div></v-card-text>
+                        <v-card-text style="padding: 7px;"><div>Nombres : {{ currentDriver.firstName }}</div></v-card-text>
+                        <v-card-text style="padding: 7px;"><div>Apellidos : {{ currentDriver.lastName }}</div></v-card-text>
+                        <v-card-text style="padding: 7px;">
+                            <div v-if="currentDriver.role==1">Rol : Cliente</div>
+                            <div v-else>Rol : Conductor</div>
+                        </v-card-text>
+                    </v-container>
+                    <v-divider class="mx-4"></v-divider>
+
+                    <v-card-actions style="text-align: center;">
+                        <v-container>
+                            <v-btn color="blue darken-1" text @click="close">Agregar a Favoritos</v-btn>
+                            <v-btn color="blue darken-1" text @click="close">Volver</v-btn>
+                        </v-container>
+                        <v-container>
+                            <v-btn color="blue darken-1" text @click="close">Bloquear</v-btn>
+                            <v-btn color="blue darken-1" text @click="addNewCargo">Solcitar cargo</v-btn>
+                        </v-container>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
+<!-- -->
+    <!--DIALOG 2 FOR ADD CARGO =================================================================================================== -->
+
+            <v-dialog v-model="dialogCargo" max-width="500px">
+    
+                <v-card style="border-radius:10px;">
+                        <v-alert type="success" v-model="rechargeSuccess" dismissible close-text="Close Alert">
+                            Solicitud de cargo enviada exitosamente
+                        </v-alert>
+                        <v-alert type="warning" v-model="noMoney" dismissible close-text="Close Alert">
+                            No tienes saldo suficiente para solicitar el servicio
+                        </v-alert>
+                    <v-card style="border-radius:10px">
+                    </v-card>
+                    <v-card-title align="center" style="test-align: center; display:block">
+                        <div class="text-xs-center">Nuevo cargo</div>
+                    </v-card-title>
+                    <v-container align="center" style="padding: 5px; text-align: center;">
+                        <v-col><v-text-field v-model="cargoInput.description" label="Descripcion"></v-text-field></v-col> 
+                        <v-col><v-text-field type="number" v-model="cargoInput.servicePrice" label="Precio"></v-text-field></v-col> 
+                        <v-col><v-text-field type="number" v-model="cargoInput.weight" label="Peso"></v-text-field></v-col> 
+                    </v-container>
+                    <v-divider class="mx-4"></v-divider>
+
+                    <v-card-actions style="text-align: center;">
+                        <v-container>
+                            <v-btn color="blue darken-1" text @click="requestCargoService">Solicitar Servicio</v-btn>
+                            <v-btn color="blue darken-1" text @click="close">Volver</v-btn>
+                        </v-container>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
+    <!--=================================================================================================================================== -->       
         </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-        <v-btn
-            small
-            class="warning"
-            fab
-            left="left"
-            @click="editItem(item)">
+        <v-btn small class="warning" fab left="left" @click="editItem(item)">
             <v-icon> mdi-pencil </v-icon>
         </v-btn>
-        <v-btn class="ml-5 error"
-            small
-            fab
-            @click="deleteItem(item)">
+        <v-btn class="ml-5 error" small fab @click="deleteItem(item)">
             <v-icon> mdi-delete </v-icon>
         </v-btn>
     </template>
     </v-data-table>
-  <!--<div>
-      <table>
-        <tbody>
-            <tr v-for="user in users" :key="user.id"> 
-              <td>{{ user.email }}</td>  
-              <td>{{ user.password }}</td>  
-              <td>{{ user.firstName }}</td>  
-              <td>{{ user.lastName }}</td>  
-            </tr>
-        </tbody>
-      </table>
-  </div>-->
+
 </template>
 
 <script>
@@ -91,6 +110,10 @@ export default {
     name: 'UserList',
     data: ()=>({
         dialog: false,
+        dialogCargo: false,
+        rechargeSuccess: false,
+        noMoney: false,
+         overlay: false,
         headers: [
             { text: 'FirstName', value: 'firstName' },
             { text: 'LastName', value: 'lastName' },
@@ -99,38 +122,41 @@ export default {
             { text: 'Actions', value: 'actions', sorteable: false}
         ],
         users: [],
-        responseAPI: '',
-        currentUser: null,
-        currentIndex: -1,
-        editedItem: {
+        currentDriver: {
             email: '',
-            password: '',
             firstName: '',
-            lastName: ''
+            lastName: '',
+            role: '',
+            id: ''
         },
-        defaultItem: {
-            email: '',
-            password: '',
-            firstName: '',
-            lastName: ''
-        }
+        cargoInput : {
+            weight: '',
+            description: '',
+            servicePrice: '',
+            serviceId: '',
+        },
+        currentIndex: -1,
     }),
 
     computed: {
         formTitle () {
-            return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
+            return this.editedIndex === -1 ? 'New Item' : 'Informacion de conductor'
         },
     },
 
     watch: {
         dialog (val) {
+            console.log(val)
             val || this.close()
+        },
+        dialogCargo (val) {
+              val || this.close()
         }
     },
 
     methods: {
-        retrieveUsers() {
-            TsDataService.getAllUsers()
+        retrieveDrivers() {
+            TsDataService.getAllDrivers()
                 .then(response => {
                     this.users = response.data.resourceList;
                     console.log(this.users);
@@ -139,50 +165,72 @@ export default {
                     console.log(e);
                 });
         },
+ 
         refreshList() {
-                this.retrieveUsers();
-                this.currentUser = null;
+                this.retrieveDrivers();
+                this.currentDriver = null;
                 this.currentIndex = -1;
         },
-        removeAllUsers() {
-                TsDataService.deleteAll()
+        requestCargoService() {
+            
+            //Obtener al driverId con el user del driver
+            TsDataService.getDriverByUserId(this.currentDriver.id)
                 .then(response => {
-                    console.log(response.data);
-                    this.refreshList();
+                    console.log("getDriverByUserID : ",response);
+                    //Obtener el servicio con DriverId
+                    TsDataService.getService(response.data.resource.id)
+                        .then(response => {
+                            this.cargoInput.serviceId = response.data.resourceList[0].id;
+                            console.log("getService : ",response)
+                            //Obtain Customer
+                            TsDataService.getCustomerByUserId(this.$store.state.auth.user.id)
+                            .then(response => {
+                                console.log("getcustomerByUserId : ", response);
+                                console.log("cargoinput : ", this.cargoInput);
+                                TsDataService.setRequestCargo(response.data.resource.id ,this.cargoInput)
+                                    .then(response => {
+                                    if(response.data.success == true)
+                                    {
+                                        this.rechargeSuccess = true; 
+                                        console.log("cargo delivered");
+                                    }
+                                    else
+                                    {
+                                        this.noMoney = true;
+                                    }
+                                })
+
+                            })
+                        })
+
                 })
-                .catch(e => {
-                    console.log(e);
-                })
+
+
+            
+            
+            
         },
-        setActiveTutorial(user, index) {
-            this.currentUser = user;
-            this.currentIndex = index;
-        },
-        searchId() {
-            TsDataService.findById(this.userId)
-            .then(response => {
-                this.currentUser = response.data;
-                console.log(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            })
+        rowClick: function (item, row) {  
+            row.select(true);
+            this.currentDriver = row.item;
+            this.dialog = true
+            console.log(this.currentDriver);
         },
         editItem (item) {
             this.editedIndex = this.users.indexOf(item)
             this.editedItem = Object.assign({}, item)
             this.dialog = true
         },
-
         deleteItem (item) {
-            //const index = this.users.indexOf(item)
             confirm('Are you sure you want to delete this item?'+item)
         },
-
+        addNewCargo () {
+            this.dialog = false;
+            this.dialogCargo = true;
+        },
         close () {
             this.dialog = false
             this.$nextTick(() => {
-                this.editedItem = Object.assign({}, this.defaultItem)
                 this.editedIndex = -1
             })
         },
@@ -190,10 +238,16 @@ export default {
         }
     },
     mounted() {
-            
-            this.retrieveUsers();
+            this.retrieveDrivers();
         }
 
 }
 
 </script>
+
+
+<style scoped>
+  tr.v-data-table__selected {
+    background: #3450dd !important;
+  }
+</style>

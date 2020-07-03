@@ -1,5 +1,4 @@
 <template>
-
     <v-container>
         <v-layout>
             <v-flex>
@@ -21,31 +20,7 @@ export default {
         sources: [],
         errors: []
     }),
-    /*    
-    created(){
-        axios.get('https://newsapi.org/v2/top-headlines?sources='+sourceId+'&apiKey='+this.apikey)
-        .then(response => {
-            this.sources = response.data.sources;
-            console.log('Sources :') ;
-            console.log/(response.data);
-
-        })
-        .catch(e => {
-            this.errors.push(e);
-        })
-    },
-    
-    methods:{
-        urlToLogo(source){
-            const hostname = new URL(source.url).hostname;
-            return 'https://logo.clearbir.com/';      
-        },
-
-        selectSource(sourceId){
-            this.$emit('select-source', sourceId);
-        }
-    }
-    */
+  
 
 }
 </script>

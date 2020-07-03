@@ -1,70 +1,59 @@
+
+<!--Aplication main view-->
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
-      v-model="drawer"
-      app
-      clipped
-    >
-      <v-list dense>
-        <v-list-item link @click="landingPage">
-          <v-list-item-action>
-            <v-icon>mdi-view-dashboard</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Dashboard</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link  @click="getTodos">
-          <v-list-item-action>
-            <v-icon>mdi-account-check</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Users</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
-        <v-content fluid>
-        <router-view/>
+  
+    <v-navigation-drawer v-model="drawer" app clipped :src="bg">
+        <v-list dense nav class="py-0" v-if="currentUser" >
+          <v-list-item >
+            
+            <v-list-item-avatar>
+              <img src="https://randomuser.me/api/portraits/men/81.jpg">
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ this.$store.state.auth.user.firstName }}</v-list-item-title>
+              <v-list-item-subtitle v-if="this.$store.state.auth.user.role == 1">Cliente</v-list-item-subtitle>
+              <v-list-item-subtitle v-else >Conductor</v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+
+          <v-divider></v-divider>
+
+          <v-list-item v-for="item in items" :key="item.title" link >
+            <v-list-item-icon>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-icon>
+
+            <v-list-item-content>
+              <v-list-item-title e @click="redirectManager(item.route)">{{ item.title }}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+           <div class="ma-5" style="text-align:center; justify:center;" v-else>
+        <h3>Inicia sesion para ver funcionalidades</h3>
+      </div>
+      </v-navigation-drawer>
+ 
+        <v-content>
+        <router-view />
       </v-content>
 
     <div class="v-content" fluid data-booted="true" style="padding: 56px 0xp 36px;">
-    <v-app-bar
-      app
-      clipped-left
-    >
+    <v-app-bar app clipped-left >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="secondary--text" style="text-style:bold"></v-toolbar-title>
       <v-card-title>
-                    <span class="headline">TropSmart</span>
-                  </v-card-title>
+        <span class="headline" >TropSmart</span>
+      </v-card-title>
       <v-spacer></v-spacer>
-      <v-btn
-        class="ml-5"
-        dark
-        large
-        color="#007BFF" :to="{name: 'SignUp'}"
-      >
+      <v-btn class="ml-5" dark large color="#007BFF" :to="{name: 'SignUp'}" v-if="!currentUser">
         <span class="mr-2" >Registrar</span>
         <v-icon>mdi-account</v-icon>
       </v-btn>
 
-      <v-btn
-      class="ml-5"
-      dark
-      large
-      color="#007BFF"
-      :to="{name: 'SignIn'}"
-      >
-      <span class="mr-2 ">Ingresar</span>
+      <v-btn  class="ml-5" dark large color="#007BFF" ref="signInButtonRef" @click="signManager">
+        <span class="mr-2" v-if="currentUser">Cerrar Sesión</span>
+        <span class="mr-2" v-else>Ingresar</span>
       <v-icon>mdi-login</v-icon>
       </v-btn>
     </v-app-bar>
@@ -78,27 +67,85 @@
 </template>
 
 <script>
+//import { EventBus } from '../services/event-bus.js';
   export default {
+    name: 'App',
+    components: {},
+    computed: {
+      currentUser() {
+        return this.$store.state.auth.user;
+      },
+      bg () {
+        return this.background ? 'https://image.freepik.com/vector-gratis/tecnologia-interfaz-fondo-abstracto_5205-97.jpg' : undefined
+      },
+    },
     props: {
       source: String,
     },
     data: () => ({
       drawer: false,
+      signInState: "Ingresar",
+      items: [
+          { title: 'Dashboard', icon: 'mdi-view-dashboard' , route: '/'},
+          { title: 'Mi cuenta', icon: 'mdi-image', route: '/profile' },
+          { title: 'Recargar créditos', icon: 'mdi-currency-usd-circle', route: '/recharge'},
+          { title: 'Configuración', icon: 'mdi-help-box', route: '/settings' },
+      ],
+       color: 'primary',
+        colors: [ 'primary', 'blue', 'success', 'red', 'teal', ],
+
     }),
     created () {
       this.$vuetify.theme.light = true
+      this.currentUser? this.signInState = "Cerrar sesión": this.signInState = "Ingresar";
+
     },
     mounted(){
-      console.log('Hola mundo desde mounted')
+        //EventBus.$on('customize',payload => {
+          // handle event
+          //console.log(payload);
+          //});
     },
+    
+
+  
+    
     methods:{
         getTodos(){
           this.$router.push('/users');
         },
         landingPage(){
-          this.$router.push('/');
-        }
-    }
+          this.$router.push('');
+        },
+        settings(){
+          this.$router.push('/settings')
+        },
+        logout() {
+        this.$store.dispatch('auth/logout');
+        this.$router.push('/login');
+
+        },
+        signManager() {
+          if(this.currentUser){
+            console.log("signManager : ", this.currentUser);
+            this.logout();
+          }
+            this.$router.push("/sign-in")
+            this.$refs.signInButtonRef.innerText = this.currentUser? this.signInState = "Cerrar sesión": this.signInState = "Ingresar";
+            console.log("signInState : ",this.signInState)
+
+        },
+        refreshParent(variable) {
+          console.log(variable)
+            this.$refs.signInButtonRef.innerText = this.currentUser? this.signInState = "Cerrar sesión": this.signInState = "Ingresar";
+        },
+        redirectManager(path) {
+          this.$router.push(path);
+        },
+        
+        
+    },
+    
   }
 </script>
 

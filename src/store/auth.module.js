@@ -1,4 +1,4 @@
-import AuthService from '../services/auth.service'
+import TsDataService from '../services/TsDataService'
 
 const user = JSON.parse(localStorage.getItem('user'));
 
@@ -11,9 +11,10 @@ export const auth = {
     state: initialState,
     actions: {
         login({commit}, user) {
-            return AuthService.login(user)
+            return TsDataService.login(user)
             .then(
                 user => {
+                    console.log("login success : ",user);
                     commit('loginSuccess', user);
                     return Promise.resolve(user);
                 },
@@ -24,11 +25,11 @@ export const auth = {
             );
         },
         logout({ commit }) {
-            AuthService.logout();
+            TsDataService.logout();
             commit('logout');
         },
         register({ commit }, user) {
-            return AuthService.register(user)
+            return TsDataService.signUp(user)
             .then(
                 response => {
                     commit('registerSuccess');
@@ -52,6 +53,7 @@ export const auth = {
         },
         logout(state) {
             state.status.loggedIn = false;
+            state.user = null;
         }
     }
 }

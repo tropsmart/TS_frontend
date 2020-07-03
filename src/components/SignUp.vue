@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="inspire" style="background-color:#1565C0">
     <v-content>
       <v-container class ="fill-height" fluid>
         <v-row align="center" justify="center">
@@ -139,7 +139,7 @@
           if(this.roleSelected == "Customer")
             this.signUpInput.discriminator = 1
           else
-          this.signUpInput.discriminator = 2
+            this.signUpInput.discriminator = 2
           TsDataService.signUp(this.signUpInput)
           .then(response => {
             console.log(response.data);

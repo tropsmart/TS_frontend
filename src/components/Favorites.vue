@@ -93,7 +93,7 @@ export default {
             }
         },
         retrieveFavourites() {
-          TsDataService.getAllFavoritesByUserId(1)
+          TsDataService.getAllFavoritesByUserId(this.$store.state.auth.user.id)
             .then(response => {
               this.favorites = response.data.resourceList;
               console.log(this.favorites);

@@ -1,8 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
+import UserList from './components/UserList.Content.vue'
+import Cargoes from './components/Cargoes.vue'
+import Favorites from './components/Favorites.vue'
 import router from './router'
 import store from './store'
-import VeeValidate from 'vee-validate'
+import * as VeeValidate from 'vee-validate';
 import vuetify from './plugins/vuetify';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -15,10 +18,14 @@ library.add(faSpinner)
 
 Vue.use(VeeValidate)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.component('UserList',UserList)
+Vue.component('Cargoes',Cargoes)
+Vue.component('Favorites',Favorites)
 
 new Vue({
   router,
   store,
   vuetify,
+  VeeValidate,
   render: h => h(App)
 }).$mount('#app')

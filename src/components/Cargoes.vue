@@ -9,22 +9,24 @@
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>Sus cargos</v-toolbar-title>
-        <v-divider
-          class="mx-4"
-          inset
-          vertical
-           ></v-divider>
+        <v-divider class="mx-4" inset vertical ></v-divider>
             <v-spacer></v-spacer>
+        <v-toolbar-items>
+                    <v-select v-if="visible && roleUser==2" style="height: 10px;" dense  class="mt-5" v-model="select" :items="items" label="Filtrar por"
+                    return-object @change="passSelection(select)"
+                    ></v-select></v-toolbar-items>
             <v-dialog v-model="dialog" max-width="500px">
-                <template v-slot:activator="{ on }">
-                    <v-btn color="primary" dark class="mb-2" v-on="on">Nuevo Usuario</v-btn>
+                <template>
+
+                    <!--<v-btn color="primary" dark class="mb-2" v-on="on">Nuevo Usuario</v-btn>-->
+                    
                 </template>
                 <v-card>
                     <v-card-title>
                         <span class="headline">{{ formTitle }}</span>
                     </v-card-title>
                     <v-card-text>
-                        <v-container>
+                  <v-container>
                             <v-row>
                                 <v-col cols="12" sm="6" md="4">
                     <v-text-field v-model="cargoInput.customerFirstName" label="Correo"></v-text-field>
@@ -46,85 +48,19 @@
     <template v-slot:item.actions="{ item }">
         <v-btn
             small
-            class="warning"
-            fab
+            class="success "
             left="left"
-            @click="editItem(item)">
-            <v-icon> mdi-pencil </v-icon>
+            @click="cargoManager(item)">
+            <span class="mr-2">Confirmar</span>
+            <v-icon> mdi-send </v-icon>
         </v-btn>
         <v-btn class="ml-5 error"
-            small
-            fab
+            small          
             @click="deleteItem(item)">
+            <span class="mr-2">Descartar</span>
             <v-icon> mdi-delete </v-icon>
         </v-btn>
     </template>
-
-
-    <!--<v-app id="inspire">
-    <v-content>
-      <v-container
-        class="fill-height"
-        fluid
-      >
-        <v-row
-          align="center"
-          justify="center"
-        >
-          <v-col
-            cols="12"
-            sm="8"
-            md="4"
-          >
-            <v-card class="elevation-12">
-              <v-toolbar
-              dark
-                color="skyblue"
-                flat
-              >
-                <v-toolbar-title>Agregar Cargo</v-toolbar-title>
-                <v-spacer></v-spacer>
-                
-              </v-toolbar>
-              <v-card-text>
-                <v-form ref="form" v-model="valid" lazy-validation>
-                  <v-text-field
-                    v-model="cargoInput.price"
-                    :rules="[v => !!v || 'Ingrese un precio']"
-                    label="Precio"
-                    name="price"
-                    prepend-icon="mdi-account"
-                    type="number"
-                  ></v-text-field>
-
-                  <v-text-field
-                    id="password"
-                    v-model="cargoInput.description"
-                    label="Descripcion"
-                    name="description"
-                    prepend-icon="mdi-lock"
-                    type="text"
-                  ></v-text-field> 
-                  <v-text-field
-                    id="password"
-                    v-model="cargoInput.price"
-                    label="Precio"
-                    name="price"
-                    prepend-icon="mdi-lock"
-                    type="text"
-                  ></v-text-field>
-                </v-form>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn dark large color="skyblue" @click="validate">Entrar</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
-    </v-content>
-  </v-app>-->
     </v-data-table>
 </template>
 
@@ -132,17 +68,22 @@
     import TsDataService from '@/services/TsDataService'
 export default {
     data: () => ({
+        visible: false,
+        roleUser : '',
+        currentCargo: null,
         dialog:false,
         valid:true,
+        select: null,
+        filterSelected : '',
+        items: [
+        'Todos',
+        'Solicitados',
+        'Confirmados',
+        'Terminados',
+        ],
         headers: [
-          { text: 'Cliente', value:'customerFirstName'},
-          { text: 'Conductor', value:'driverLastName'},
-          { text: 'Peso', value:'weight'},
-          { text: 'Descrpcion', value:'description'},
-          { text: 'Precio', value:'servicePrice'}
         ],
         cargoes: [],
-        currentCargo: null,
         currentIndex: -1,
         cargoInput :{
             serviceId: '',
@@ -166,6 +107,9 @@ export default {
       formTitle () {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item'
       },
+      currentUser() {
+        return this.$store.state.auth.user;
+      },
     },
 
     watch:{
@@ -180,12 +124,78 @@ export default {
                 TsDataService.registerCargo(this.cargoInput);
             }
         },
-        retrieveCargoes() {
-          TsDataService.getAllCargoes()
+        retrieveCargoesByCustomer() {
+          TsDataService.getCustomerByUserId(this.$store.state.auth.user.id)
             .then(response => {
-              this.cargoes = response.data.resourceList;
-              console.log(this.cargoes);
+              TsDataService.getAllCargoesByCustomerId(response.data.resource.id)
+                .then(response => {
+                  this.cargoes = response.data.resourceList;
+                  console.log(this.cargoes);
+                })
             })
+        },
+        retrieveCargoesByDriver() {
+          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
+            .then(response => {
+              TsDataService.getAllCargoesByDriverId(response.data.resource.id)
+                .then(response => {
+                  this.cargoes = response.data.resourceList;
+                  console.log(this.cargoes);
+                })
+            })
+        },
+
+        retrieveRequestedCargoesByDriver() {
+          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
+            .then(response => {
+              TsDataService.getRequestedCargoesByDriverId(response.data.resource.id)
+                .then(response => {
+                  this.cargoes = response.data.resourceList;
+                  console.log(this.cargoes);
+                })
+            })
+        },
+        retrieveConfirmedCargoesByDriver() {
+          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
+            .then(response => {
+              TsDataService.getConfirmedCargoesByDriverId(response.data.resource.id)
+                .then(response => {
+                  this.cargoes = response.data.resourceList;
+                  console.log(this.cargoes);
+                })
+            })
+        },
+        retrieveFinishedCargoesByDriver() {
+          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
+            .then(response => {
+              TsDataService.getFinishedCargoesByDriverId(response.data.resource.id)
+                .then(response => {
+                  this.cargoes = response.data.resourceList;
+                  console.log(this.cargoes);
+                })
+            })
+        },
+        setDynamicHeaders() {
+            if(this.$store.state.auth.user.role==1)
+            {
+              this.headers = [
+              { text: 'Conductor', value:'driver'},
+              { text: 'Descripcion', value:'description'},
+              { text: 'Estado', value:'cargoStatus'},
+              { text: 'Peso', value:'weight'},
+              { text: 'Precio', value:'servicePrice'},
+              ]
+            }
+            else{
+              this.headers = [
+              { text: 'Cliente', value:'customer'},
+              { text: 'Descripcion', value:'description'},
+              { text: 'Estado', value:'cargoStatus'},
+              { text: 'Peso', value:'weight'},
+              { text: 'Precio', value:'servicePrice'},
+              { text: 'Actions', value: 'actions', sorteable: false}
+              ]  
+            }
         },
         UserInfo(item) {
           this.selectDriver.driverFirstName = this.cargoes.indexOf(item).driverFirstName 
@@ -197,10 +207,59 @@ export default {
         },
         driverProfile() {
           this.$router.push("Drivers")
+        },
+        passSelection(data) {
+        this.filterSelected = data;
+        this.cargoes = [];
+      
+        if(data == "Todos")
+          this.retrieveCargoesByDriver();
+        if(data == "Solicitados")
+          this.retrieveRequestedCargoesByDriver();
+        if(data == "Confirmados")
+          this.retrieveConfirmedCargoesByDriver();
+        if(data == "Terminados")
+          this.retrieveFinishedCargoesByDriver();
+        },
+        rowClick: function (item, row) {  
+            row.select(true);
+            this.currentCargo = row.item;
+        },
+        cargoManager(data) {
+          console.log(data);
+          if(data.cargoStatus == "Esperando confirmacion")
+          {
+            TsDataService.setCargoConfirmation(data.id)
+              .then(response => {
+                this.retrieveCargoesByDriver();
+                console.log("setCargoConfirmation response : ",response)
+              })
+          }
+          if(data.cargoStatus == "En proceso")
+          {
+            TsDataService.setCargoDeliver(data.id)
+              .then(response => {
+                this.retrieveCargoesByDriver();
+                console.log("setCargoDeliver response : ",response)
+              })
+          }
         }
     },
     mounted() {
-      this.retrieveCargoes();
+      console.log("cargo store user : ",this.$store.state.auth.user.role)
+      this.setDynamicHeaders()
+      this.visible = true;
+      if(this.$store.state.auth.user.role == 1)
+      {
+        this.retrieveCargoesByCustomer();
+        this.roleUser=1;
+
+      }
+      else
+      {
+        this.retrieveCargoesByDriver();
+        this.roleUser=2;
+      }
     }
 }
 </script>

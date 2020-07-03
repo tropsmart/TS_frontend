@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 <template>
-  <v-app id="inspire">
+  <v-app id="inspire" style="background-color:#1565C0">
     <v-content>
       <v-container
         class="fill-height"
@@ -33,6 +34,7 @@
                     name="login"
                     prepend-icon="mdi-account"
                     type="text"
+                    
                   ></v-text-field>
 
                   <v-text-field
@@ -59,8 +61,9 @@
 </template>
 
 <script>
-import TsDataService from '@/services/TsDataService'
-  export default {
+//import { EventBus } from '../services/event-bus.js';
+
+export default {
     data: () => ({
       valid:false,
       signInInput : { 
@@ -71,23 +74,45 @@ import TsDataService from '@/services/TsDataService'
     props: {
       source: String,
     },
+    mounted() {
+      
+    },
     methods: {
-      validate () {
+      validate () {              
         if(this.$refs.form.validate())
         {
-
-          TsDataService.SignIn(this.signInInput)
+          console.log("signInInput : ",this.signInInput);
+          this.$store.dispatch('auth/login', this.signInInput)
+                .then( () =>{
+                  this.$router.push("/profile").catch(()=>{}),
+                error => {
+                  this.loading = false;
+                  this.message = (error.response && error.response.data)
+                            || error.message || error.toString();
+                }
+              });
+              
+          /*TsDataService.login(this.signInInput)
           .then(response => {
             if(response.data.success==true)
             {
-              alert("Inicio sesion correctamente")
-              this.$router.push("/profile")
+              console.log("auth.user :",response.data.resource)
+              
             }
             else
               alert("Credenciales no validas")
-          })
+          })*/
         }
-      }
+      },
+      reload()
+        {
+            var location = this.$route.fullPath
+
+            this.$router.replace('')
+
+            this.$nextTick(() => this.$router.replace(location))
+        }
     }
-  }
+   
+    }
 </script>
