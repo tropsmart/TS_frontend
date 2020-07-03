@@ -145,7 +145,7 @@
       validate () {
         if (this.$refs.form.validate())
         {
-          if(this.roleSelected == "Customer")
+          if(this.roleSelected == "Cliente")
             this.signUpInput.discriminator = 1
           else
             this.signUpInput.discriminator = 2

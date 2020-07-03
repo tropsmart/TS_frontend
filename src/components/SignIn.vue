@@ -61,7 +61,6 @@
 </template>
 
 <script>
-//import { EventBus } from '../services/event-bus.js';
 
 export default {
     data: () => ({
