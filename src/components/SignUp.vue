@@ -140,7 +140,7 @@
             this.signUpInput.discriminator = 1
           else
             this.signUpInput.discriminator = 2
-          TsDataService.signUp(this.signUpInput)
+          TsDataService.register(this.signUpInput)
           .then(response => {
             console.log(response.data);
           })
