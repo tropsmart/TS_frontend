@@ -92,7 +92,7 @@ export default {
                 TsDataService.setBlocked(this.blockedInput.customerId, this.blockedInput.driverId);
             }
         },
-        retrieveFavourites() {
+        retrieveBlockeds() {
           TsDataService.getAllBlockedsByUser(this.blockedInput.customerId)
             .then(response => {
               this.blockeds = response.data.resourceList;
@@ -106,7 +106,7 @@ export default {
           confirm(`Estas seguro que quieres eliminar a ${item.blocked} de tu lista de favoritos?`)
         },
         refreshList() {
-          this.retrieveFavourites();
+          this.retrieveBlockeds();
           this.currentFavorite = null,
           this.currentIndex = -1
         },
@@ -130,7 +130,7 @@ export default {
     },
 
     mounted() {
-      this.retrieveFavourites();
+      this.retrieveBlockeds();
     }
 }
 </script>

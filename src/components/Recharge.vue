@@ -198,17 +198,21 @@ export default {
             rechargeCredits () {              
                 if(this.$refs.formRecharge.validate())
                 {
-                    TsDataService.rechargeCredits(this.$store.state.auth.user.id, this.mountCredits)
-                    .then(response => {
-                        if(response.data.success==true)
-                        {
-                            this.rechargeSuccess = true;
-                            this.retrievePaymentMethodList()
-                            console.log("auth.user :",response.data)
-                        }
-                        else
-                            this.rechargeFailed = true;
-                    })
+                    TsDataService.getCustomerByUserId(this.$store.state.auth.user.id)
+                        .then(response => {
+                            TsDataService.rechargeCredits(response.data.resource.id, this.mountCredits)
+                                .then(response => {
+                                    if(response.data.success==true)
+                                    {
+                                        this.rechargeSuccess = true;
+                                        this.retrievePaymentMethodList()
+                                        console.log("auth.user :",response.data)
+                                    }
+                                    else
+                                        this.rechargeFailed = true;
+                                    })
+                        })
+                    
                 }
                 else
                 {
