@@ -46,8 +46,8 @@
 
                     <v-card-actions style="text-align: center;">
                         <v-container>
-                            <v-btn color="blue darken-1" text @click="close">Agregar a Favoritos</v-btn>
-                            <v-btn color="blue darken-1" text @click="close">Volver</v-btn>
+                            <v-btn color="blue darken-1" text @click="AddFavorites">Agregar a Favoritos</v-btn>
+                            <v-btn color="blue darken-1" text @click="AddBlockeds">Volver</v-btn>
                         </v-container>
                         <v-container>
                             <v-btn color="blue darken-1" text @click="close">Bloquear</v-btn>
@@ -204,11 +204,6 @@ export default {
                         })
 
                 })
-
-
-            
-            
-            
         },
         rowClick: function (item, row) {  
             row.select(true);
@@ -227,6 +222,18 @@ export default {
         addNewCargo () {
             this.dialog = false;
             this.dialogCargo = true;
+        },
+        AddFavorites () {
+            TsDataService.setFavorite(this.$store.state.auth.user.id,this.currentDriver.id)
+                .then( () => {
+                    console.log("Add favorites success");
+                })
+        },
+        AddBlockeds () {
+            TsDataService.setBlocked(this.$store.state.auth.user.id,this.currentDriver.id)
+                .then(() => {
+                    console.log("Add BlockList success");
+                })
         },
         close () {
             this.dialog = false

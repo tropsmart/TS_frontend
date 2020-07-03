@@ -92,9 +92,7 @@
                             </v-alert>
                             <v-alert type="error" v-model="rechargeFailed" dismissible close-text="Close Alert">
                                   No se pudo realizar la transaccion                                    
-                            </v-alert>
-                            
-                        
+                            </v-alert>                      
                         <v-text-field
                             v-model="mountCredits"
                             :rules="[v => !!v || 'Ingrese un monto para recargar']"
