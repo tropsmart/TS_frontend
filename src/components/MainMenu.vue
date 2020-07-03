@@ -66,11 +66,8 @@
 
             <v-card-title class="headline">Empieza a manejar tus envios de manera remota</v-card-title>
 
-            <v-card-subtitle>Listen to your favorite artists and albums whenever and wherever, online and offline.</v-card-subtitle>
-
-            <v-card-actions>
-              <v-btn text>Listen Now</v-btn>
-            </v-card-actions>
+            <v-card-subtitle>Selecciona la accion que requieras en el panel superior.</v-card-subtitle>
+        
           </v-card>
 
         </v-content>

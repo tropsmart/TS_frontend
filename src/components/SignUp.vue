@@ -9,6 +9,12 @@
                 <v-toolbar-title>Registrarse</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
+                <v-alert type="success" v-model="registerlabelSuccess" dismissible close-text="Close Alert">
+                  Se registro al usuario satisfactoriamente
+                </v-alert>
+                <v-alert type="error" v-model="registerlabelFailed" dismissible close-text="Close Alert">
+                  No se pudo registrar al usuario
+                </v-alert>
                 <v-form ref="form" v-model="valid" lazy-validation>
                   <v-text-field
                     label="Nombre"
@@ -93,8 +99,11 @@
     
     data: () => ({
       roleSelected :"",
+      registerSuccess: '',
       valid: false,
       validFirstName: true,
+      registerlabelSuccess: false,
+      registerlabelFailed: false,
       nameRulesFN: [
         v => !!v || 'Nombre es requerido',
         v => (v && v.length <= 20) || 'Nombre debe contener no mas de 10 caracteres',
@@ -140,9 +149,15 @@
             this.signUpInput.discriminator = 1
           else
             this.signUpInput.discriminator = 2
+
+          console.log("signUpInput : ",this.signUpInput)
           TsDataService.register(this.signUpInput)
           .then(response => {
-            console.log(response.data);
+            console.log("response : ",response);
+            if(response.data.success == true)
+              this.registerlabelSuccess = true;
+            else
+              this.registerlabelFailed = true;
           })
     
         }
