@@ -47,10 +47,10 @@
                     <v-card-actions style="text-align: center;">
                         <v-container>
                             <v-btn color="blue darken-1" text @click="AddFavorites">Agregar a Favoritos</v-btn>
-                            <v-btn color="blue darken-1" text @click="AddBlockeds">Volver</v-btn>
+                            <v-btn color="blue darken-1" text @click="close">Volver</v-btn>
                         </v-container>
                         <v-container>
-                            <v-btn color="blue darken-1" text @click="close">Bloquear</v-btn>
+                            <v-btn color="blue darken-1" text @click="AddBlockeds">Bloquear</v-btn>
                             <v-btn color="blue darken-1" text @click="addNewCargo">Solcitar cargo</v-btn>
                         </v-container>
                     </v-card-actions>
@@ -92,7 +92,7 @@
     <!--=================================================================================================================================== -->       
         </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
         <v-btn small class="warning" fab left="left" @click="editItem(item)">
             <v-icon> mdi-pencil </v-icon>
         </v-btn>
@@ -242,11 +242,21 @@ export default {
             })
         },
         save () { 
-        }
+        },
+        redirectManager(path) {
+          this.$router.push(path).catch(()=>{});
+        }, 
     },
     mounted() {
+        if(this.$store.state.auth.user != undefined)
+        {
             this.retrieveDrivers();
         }
+        else
+        {
+            this.redirectManager("sign-in");
+        }
+    }
 
 }
 

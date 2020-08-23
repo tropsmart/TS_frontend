@@ -20,10 +20,10 @@
                                     No se pudo realizar la actualizacion de informacion
                                 </v-alert>
                                 <v-label>Configuracion del usuario</v-label>
-                                <v-text-field label="Nombres" name="firstName" v-model="peopleInfoInput.firstName" prepend-icon="mdi-message-cog" type="text" required></v-text-field>
-                                <v-text-field label="Apellidos" name="lastName" v-model="peopleInfoInput.lastName" prepend-icon="mdi-message-cog" type="text" required></v-text-field> 
-                                <v-text-field label="Teléfono" name="mobilePhone" v-model="userInfoInput.phone" prepend-icon="mdi-phone" type="text" required></v-text-field> 
-                                <v-divider class="mx-4"></v-divider>
+                                <v-text-field label="Nombres" name="firstName" v-model="settingsInput.firstName" prepend-icon="mdi-message-cog" type="text" required></v-text-field>
+                                <v-text-field label="Apellidos" name="lastName" v-model="settingsInput.lastName" prepend-icon="mdi-message-cog" type="text" required></v-text-field> 
+                                <v-text-field label="Teléfono" name="mobilePhone" v-model="settingsInput.phone" prepend-icon="mdi-phone" type="text" required></v-text-field> 
+                                <v-divider class="mx-4 my-5"></v-divider>
                                 <v-label class="ma-4">Configuracion de la cuenta</v-label>
                                 <v-text-field label="Lenguaje" name="language" v-model="settingsInput.language" prepend-icon="mdi-book-variant-multiple" type="text" required></v-text-field>
                                 <v-text-field label="Tipo de moneda" name="paymentCurrency" v-model="settingsInput.paymentCurrency" prepend-icon="mdi-bitcoin" type="text" required></v-text-field> 
@@ -55,6 +55,9 @@ export default {
         updateConfigurationSuccess: false,
         updateConfigurationFailed: false,
         settingsInput : {
+            firstName: '',
+            lastName: '',
+            phone: '',
             language: '',
             paymentCurrency: ''
         },
@@ -68,12 +71,19 @@ export default {
 
     }),
     methods: {
+        retrieveSettings() {
+            TsDataService.getConfiguration(this.$store.state.auth.user.id)
+            .then(response => {
+                this.settingsInput = response.data.resource;
+            })
+        },
         updateSettings() {
             if(this.$refs.form.validate())
             {
                 TsDataService.updateConfiguration(this.$store.state.auth.user.id,this.settingsInput)
                 .then(response => {
                     console.log(response);
+                    TsDataService.update 
                     this.updateConfigurationSuccess = true;
                 })
             }
@@ -83,6 +93,19 @@ export default {
         },
         returnBack() {
             this.$router.push('/profile')
+        },
+        redirectManager(path) {
+          this.$router.push(path).catch(()=>{});
+        }, 
+    },
+    mounted() {
+        if(this.$store.state.auth.user != undefined)
+        {
+            this.retrieveSettings();
+        }
+        else
+        {
+            this.redirectManager("sign-in");
         }
     }
 }

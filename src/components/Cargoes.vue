@@ -1,5 +1,4 @@
 <template>
-
     <v-data-table
       :headers= "headers"
       :items="cargoes"
@@ -12,7 +11,9 @@
         <v-divider class="mx-4" inset vertical ></v-divider>
             <v-spacer></v-spacer>
         <v-toolbar-items>
-                    <v-select v-if="visible && roleUser==2" style="height: 10px;" dense  class="mt-5" v-model="select" :items="items" label="Filtrar por"
+                    <v-select v-if="visible && roleUser==2" style="height: 10px;" 
+                    dense  class="mt-5" v-model="select" :items="items" 
+                    label="Filtrar por"
                     return-object @change="passSelection(select)"
                     ></v-select></v-toolbar-items>
             <v-dialog v-model="dialog" max-width="500px">
@@ -45,7 +46,7 @@
             </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
         <v-btn
             small
             class="success "
@@ -243,22 +244,32 @@ export default {
                 console.log("setCargoDeliver response : ",response)
               })
           }
-        }
+        },
+        redirectManager(path) {
+          this.$router.push(path).catch(()=>{});
+        },  
     },
     mounted() {
-      console.log("cargo store user : ",this.$store.state.auth.user.role)
-      this.setDynamicHeaders()
-      this.visible = true;
-      if(this.$store.state.auth.user.role == 1)
+      //console.log("cargo in cargoes store user : ",this.$store.state)
+      if(this.$store.state.auth.user != undefined)
       {
-        this.retrieveCargoesByCustomer();
-        this.roleUser=1;
+        this.setDynamicHeaders()
+        this.visible = true;
+        if(this.$store.state.auth.user.role == 1)
+        {
+          this.retrieveCargoesByCustomer();
+          this.roleUser=1;
 
+        }
+        else
+        {
+          this.retrieveCargoesByDriver();
+          this.roleUser=2;
+        }
       }
-      else
+      else 
       {
-        this.retrieveCargoesByDriver();
-        this.roleUser=2;
+        this.redirectManager("sign-in");
       }
     }
 }

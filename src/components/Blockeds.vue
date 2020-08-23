@@ -41,7 +41,7 @@
             </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
         <v-btn class="ml-5 error"
             small
             fab
@@ -93,11 +93,24 @@ export default {
             }
         },
         retrieveBlockeds() {
-          TsDataService.getAllBlockedsByUser(this.blockedInput.customerId)
-            .then(response => {
-              this.blockeds = response.data.resourceList;
-              console.log(this.blockeds);
-            })
+          if(this.$store.state.auth.user.role == 1)
+          {
+            console.log("retrieve blockeds by : ", this.$store.state.auth.user.id);
+            TsDataService.getAllBlockedsByUser(this.$store.state.auth.user.id)
+              .then(response => {
+                this.blockeds = response.data.resourceList;
+                console.log(this.blockeds);
+              })
+          }
+          if(this.$store.state.auth.user.role == 2)
+          {
+            console.log("retrieve blockeds by : ", this.$store.state.auth.user.id);
+            TsDataService.getAllBlockedsByUser(this.$store.state.auth.user.id)
+              .then(response => {
+                this.blockeds = response.data.resourceList;
+                console.log(this.blockeds);
+              })
+          }
         },
         driverProfile() {
           this.$router.push("Drivers")
@@ -126,11 +139,21 @@ export default {
           this.$nextTick(() => {
             this.currentIndex = -1
           })
-        }
+        },
+        redirectManager(path) {
+          this.$router.push(path).catch(()=>{});
+        },  
     },
 
     mounted() {
+      if(this.$store.state.auth.user != undefined)
+      {
       this.retrieveBlockeds();
+      }
+      else
+      {
+        this.redirectManager("sign-in");
+      }
     }
 }
 </script>

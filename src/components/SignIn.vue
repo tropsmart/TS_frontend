@@ -21,10 +21,15 @@
                 color="skyblue"
                 flat
               >
+              
                 <v-toolbar-title>Iniciar Sesión</v-toolbar-title>
+     
                 <v-spacer></v-spacer>
                 
               </v-toolbar>
+                           <v-alert type="error" v-model="loginLabelFailed" dismissible close-text="Close Alert">
+                  Usuario o contraseña incorrectos
+                </v-alert>
               <v-card-text>
                 <v-form ref="form" v-model="valid" lazy-validation>
                   <v-text-field
@@ -50,7 +55,9 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn dark large color="skyblue" @click="validate">Entrar</v-btn>
+                <v-btn dark large color="skyblue" @click="validate"  :disabled="loading">
+                  <span v-show="loading" class="spinner-border spinner-border-sm"></span>
+                  Entrar</v-btn>
               </v-card-actions>
             </v-card>
           </v-col>
@@ -61,14 +68,18 @@
 </template>
 
 <script>
+import TsDataService from '../services/TsDataService'
 
 export default {
     data: () => ({
       valid:false,
       signInInput : { 
         email: '',
-        password: ''
-      }
+        password: '',
+      },
+      loginLabelFailed: false,
+      loading: false,
+
     }),
     props: {
       source: String,
@@ -79,17 +90,51 @@ export default {
     methods: {
       validate () {              
         if(this.$refs.form.validate())
-        {
-          console.log("signInInput : ",this.signInInput);
-          this.$store.dispatch('auth/login', this.signInInput)
-                .then( () =>{
-                  this.$router.push("/profile").catch(()=>{}),
+        { 
+          TsDataService.login(this.signInInput)
+          .then(response =>{
+            console.log("RRRRRResponse : ", response);
+            if(response.success == true)
+            {
+              this.$store.dispatch('auth/login', response.resource)
+              .then( ()=>{
+                this.$router.push('/profile')
+                .catch(()=>{}),
                 error => {
-                  this.loading = false;
-                  this.message = (error.response && error.response.data)
+                    this.loading = false;
+                    this.message = (error.response && error.response.data)
                             || error.message || error.toString();
-                }
-              });
+                    }
+              })
+            }
+            else
+            {
+              this.loginLabelFailed = true;
+            }
+          })
+          
+          
+          
+          //auth/login  From auth.module.js
+          /*this.$store.dispatch('auth/login', this.signInInput)
+                .then( response =>{
+                  console.log("signIn response : ", response);
+                  if(response.success == true)
+                  {
+                    this.$router.push("/profile")
+                    .catch(()=>{}) ,
+                    error => {
+                    this.loading = false;
+                    this.message = (error.response && error.response.data)
+                            || error.message || error.toString();
+   
+                    }
+                  }
+                  else
+                  {
+                    this.loginLabelFailed = true;
+                  }  
+              });*/
               
           /*TsDataService.login(this.signInInput)
           .then(response => {

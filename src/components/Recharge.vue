@@ -1,10 +1,10 @@
 <template>
     <v-data-table
       :headers= "headers"
-      :items="paymentMethods"
+      :items= "paymentMethods"
       sort-by="weight"
       class="elevation-12"
-      @click:row="rowClick"
+      @click:row= "rowClick"
     >
     <template v-slot:top>
       <v-toolbar flat color="white">
@@ -114,7 +114,7 @@
       <!-- =======================================================================================================================================================-->
       </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
         <v-btn
             small
             class="warning"
@@ -241,16 +241,26 @@ export default {
                 this.rechargeInput.bankName = data
             },
             rowClick: function (item, row) {  
-            row.select(true);
-            this.currentPaymentMethod = row.item;
-            this.rechargeCreditsdialog = true
+                row.select(true);
+                this.currentPaymentMethod = row.item;
+                this.rechargeCreditsdialog = true
             },
             returnProfile() {
               this.$router.push("/profile");
-            }
+            },
+            redirectManager(path) {
+                this.$router.push(path).catch(()=>{});
+            }, 
         },   
         mounted () {
-          this.retrievePaymentMethodList();
+            if(this.$store.state.auth.user != undefined)
+            {
+                this.retrievePaymentMethodList();
+            }
+            else
+            {
+                this.redirectManager("sign-in");
+            }
         } 
       }
 

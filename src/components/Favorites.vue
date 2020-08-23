@@ -41,7 +41,7 @@
             </v-dialog>
       </v-toolbar>
     </template>
-    <template v-slot:item.actions="{ item }">
+    <template v-slot:[`item.actions`]="{ item }">
         <v-btn class="ml-5 error"
             small
             fab
@@ -126,11 +126,21 @@ export default {
           this.$nextTick(() => {
             this.currentIndex = -1
           })
-        }
+        },
+        redirectManager(path) {
+          this.$router.push(path).catch(()=>{});
+        }, 
     },
 
     mounted() {
-      this.retrieveFavourites();
+      if(this.$store.state.auth.user != undefined)
+      {
+        this.retrieveFavourites();
+      }
+      else
+      {
+        this.redirectManager("sign-in");
+      }
     }
 }
 </script>

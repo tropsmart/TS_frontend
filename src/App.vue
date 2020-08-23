@@ -35,7 +35,7 @@
       </v-navigation-drawer>
  
         <v-content>
-        <router-view />
+        <router-view/>
       </v-content>
 
     <div class="v-content" fluid data-booted="true" style="padding: 56px 0xp 36px;">
@@ -85,14 +85,24 @@
     data: () => ({
       drawer: false,
       signInState: "Ingresar",
-      items: [
-          { title: 'Dashboard', icon: 'mdi-view-dashboard' , route: '/'},
+      payToUse: 'a',
+      items: [],
+      items1: [
+          { title: 'Dashboard', icon: 'mdi-view-dashboard' , route: '/profile'},
+          { title: 'Landing Page', icon: 'mdi-view-dashboard', route: '/'},
           { title: 'Mi cuenta', icon: 'mdi-image', route: '/profile' },
-          { title: 'Recargar créditos', icon: 'mdi-currency-usd-circle', route: '/recharge'},
+          { title: 'Recargar créditos' , icon: 'mdi-currency-usd-circle', route: '/recharge'},
           { title: 'Configuración', icon: 'mdi-help-box', route: '/settings' },
       ],
-       color: 'primary',
-        colors: [ 'primary', 'blue', 'success', 'red', 'teal', ],
+      items2: [
+          { title: 'Dashboard', icon: 'mdi-view-dashboard' , route: '/profile'},
+          { title: 'Landing Page', icon: 'mdi-view-dashboard', route: '/'},
+          { title: 'Mi cuenta', icon: 'mdi-image', route: '/profile' },
+          { title: 'Administrar subscripciones' , icon: 'mdi-currency-usd-circle', route: '/subscriptions'},
+          { title: 'Configuración', icon: 'mdi-help-box', route: '/settings' },
+      ],
+      color: 'primary',
+      colors: [ 'primary', 'blue', 'success', 'red', 'teal', ],
 
     }),
     created () {
@@ -101,25 +111,17 @@
 
     },
     mounted(){
-        //EventBus.$on('customize',payload => {
-          // handle event
-          //console.log(payload);
-          //});
+      console.log("status : ",this.$store.state.status);
+      if(this.$store.state.auth.user != undefined)
+      {
+        if(this.$store.state.auth.user.role == 1)
+          this.items = this.items1;
+        else
+          this.items = this.items2;
+        this.redirectManager("profile");
+      }
     },
-    
-
-  
-    
     methods:{
-        getTodos(){
-          this.$router.push('/users');
-        },
-        landingPage(){
-          this.$router.push('');
-        },
-        settings(){
-          this.$router.push('/settings')
-        },
         logout() {
         this.$store.dispatch('auth/logout');
         this.$router.push('/login');
@@ -140,10 +142,8 @@
             this.$refs.signInButtonRef.innerText = this.currentUser? this.signInState = "Cerrar sesión": this.signInState = "Ingresar";
         },
         redirectManager(path) {
-          this.$router.push(path);
-        },
-        
-        
+            this.$router.push(path).catch(()=>{});
+        },  
     },
     
   }

@@ -11,7 +11,10 @@ export const auth = {
     state: initialState,
     actions: {
         login({commit}, user) {
-            return TsDataService.login(user)
+            console.log("login success : ",user);
+                    commit('loginSuccess', user);
+                    return Promise.resolve(user);
+            /*return TsDataService.login(user)
             .then(
                 user => {
                     console.log("login success : ",user);
@@ -22,7 +25,7 @@ export const auth = {
                     commit('loginFailure');
                     return Promise.reject(error);
                 }
-            );
+            );*/
         },
         logout({ commit }) {
             TsDataService.logout();

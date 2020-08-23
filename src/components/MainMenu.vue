@@ -20,16 +20,13 @@
                             <v-row tile text dense dark v-if="rowVisible" color="white" group>
                                 <v-col><v-btn tile text dense dark color="white" group @click="select(1)">Cargos</v-btn></v-col>
                                 <v-col><v-btn v-if="this.$store.state.auth.user.role==1" tile text dense dark color="white" group @click="select(2)">Buscar</v-btn></v-col>
-                                <v-col><v-btn v-if="this.$store.state.auth.user.role==1" tile text dense dark color="white" group @click="select(5)">Favoritos</v-btn></v-col>
-                                <v-col><v-btn v-if="this.$store.state.auth.user.role==2" tile text dense dark color="white" group @click="select(6)">Reseñas</v-btn></v-col>
-                                <v-col><v-btn tile text dense dark color="white" group @click="select(7)">Bloqueados</v-btn></v-col>
+                                <v-col><v-btn v-if="this.$store.state.auth.user.role==1" tile text dense dark color="white" group @click="select(3)">Favoritos</v-btn></v-col>
+                                <v-col><v-btn v-if="this.$store.state.auth.user.role==2" tile text dense dark color="white" group @click="select(4)">Reseñas</v-btn></v-col>
+                                <v-col><v-btn tile text dense dark color="white" group @click="select(5)">Bloqueados</v-btn></v-col>
                                 <v-col><v-btn tile text dense dark color="white" group value="justify">Noticias</v-btn></v-col>
-
                             </v-row>
                         </v-container>
-                    </v-card-actions>
-                   
-                        
+                    </v-card-actions>    
                 </v-row>
    
                </v-card-text>
@@ -46,15 +43,14 @@
             rounded
             class="rounded-corner pa-5"
           >
-                <!-- 
-                    1.- Cargos -> Customer
-                    2.- Buscar Transportista -> Customer
-                    3.- Cargos Solicitados -> Driver 
-                    4.- Hisotial de cargos -> Driver
-                    5.- Favoritos -> Customer
-                    6.- Reseñas -> Driver
-                    7.- Bloqueados -> Both
-                -->
+                 <!-- 
+                            1.- Cargos -> Customer
+                            2.- Buscar Transportista -> Customer
+                            3.- Favoritos -> Customer
+                            4.- Reseñas -> Driver
+                            5.- Bloqueados -> Both
+                            -->
+
             <div v-if=" this.state==1"><Cargoes></Cargoes></div>
             <div v-if=" this.state==2">
                 <v-text-field label="Buscar transportista" outlined clearable
@@ -62,7 +58,8 @@
                 <UserList></UserList>
             </div>
             <div v-if=" this.state==3"><Favorites></Favorites></div>
-
+            <div v-if=" this.state==4"><Reviews></Reviews></div>
+            <div v-if=" this.state==5"><Blockeds></Blockeds></div>
 
             <v-card-title class="headline">Empieza a manejar tus envios de manera remota</v-card-title>
 
@@ -89,11 +86,21 @@ export default {
         select(value) {
             this.state = value
         },
+        redirectManager(path) {
+          this.$router.push(path).catch(()=>{});
+        },  
 
     },
     mounted() {
-        console.log("store user : ",this.$store.state.auth.user)
         this.rowVisible = true;
+        if(this.$store.state.auth.user != undefined)
+        {
+            console.log("store user : ",this.$store.state.auth.user)
+        }
+        else
+        {
+            this.redirectManager("sign-in");
+        }
     }
 }
 </script>
