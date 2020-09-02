@@ -125,56 +125,38 @@ export default {
                 TsDataService.registerCargo(this.cargoInput);
             }
         },
-        retrieveCargoesByCustomer() {
-          TsDataService.getCustomerByUserId(this.$store.state.auth.user.id)
-            .then(response => {
-              TsDataService.getAllCargoesByCustomerId(response.data.resource.id)
-                .then(response => {
-                  this.cargoes = response.data.resourceList;
-                  console.log(this.cargoes);
-                })
-            })
-        },
-        retrieveCargoesByDriver() {
-          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
-            .then(response => {
-              TsDataService.getAllCargoesByDriverId(response.data.resource.id)
-                .then(response => {
-                  this.cargoes = response.data.resourceList;
-                  console.log(this.cargoes);
-                })
-            })
+        retrieveCargoes() {
+
+
+          TsDataService.getAllCargoesByCustomerId(this.$store.state.auth.user.roleId)
+          .then(response => {
+            this.cargoes = response.data.resourceList;
+            console.log(this.cargoes);
+          })
         },
 
+
         retrieveRequestedCargoesByDriver() {
-          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
-            .then(response => {
-              TsDataService.getRequestedCargoesByDriverId(response.data.resource.id)
+          TsDataService.getRequestedCargoesByDriverId(this.$store.state.auth.user.roleId)
                 .then(response => {
                   this.cargoes = response.data.resourceList;
                   console.log(this.cargoes);
                 })
-            })
         },
         retrieveConfirmedCargoesByDriver() {
-          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
-            .then(response => {
-              TsDataService.getConfirmedCargoesByDriverId(response.data.resource.id)
+
+           TsDataService.getConfirmedCargoesByDriverId(this.$store.state.auth.user.roleId)
                 .then(response => {
                   this.cargoes = response.data.resourceList;
                   console.log(this.cargoes);
                 })
-            })
         },
         retrieveFinishedCargoesByDriver() {
-          TsDataService.getDriverByUserId(this.$store.state.auth.user.id)
-            .then(response => {
-              TsDataService.getFinishedCargoesByDriverId(response.data.resource.id)
+            TsDataService.getFinishedCargoesByDriverId(this.$store.state.auth.user.roleId)
                 .then(response => {
                   this.cargoes = response.data.resourceList;
                   console.log(this.cargoes);
                 })
-            })
         },
         setDynamicHeaders() {
             if(this.$store.state.auth.user.role==1)
@@ -255,17 +237,7 @@ export default {
       {
         this.setDynamicHeaders()
         this.visible = true;
-        if(this.$store.state.auth.user.role == 1)
-        {
-          this.retrieveCargoesByCustomer();
-          this.roleUser=1;
-
-        }
-        else
-        {
-          this.retrieveCargoesByDriver();
-          this.roleUser=2;
-        }
+        this.retrieveCargoes();
       }
       else 
       {

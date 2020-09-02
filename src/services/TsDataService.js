@@ -36,7 +36,7 @@ class TsDataService {
     }
 
     getAllDrivers() {
-        return http.get("api/users/drivers", { headers: authHeader() })
+        return http.get("api/drivers", { headers: authHeader() })
             .then(response => {
                 return response;
             })
@@ -50,14 +50,18 @@ class TsDataService {
         return http.put(`/api/customers/${customerId}/credits/${credits}`, { headers: authHeader() });
     }
 
+    /*
     getCustomerByUserId(userId) {
         return http.get(`api/customers/users/${userId}`, { headers: authHeader() });
-    }
+    }*/
 
     //Driver
+
+    /*
     getDriverByUserId(userId) {
         return http.get(`api/drivers/users/${userId}`, { headers: authHeader() });
     }
+    */
 
     //Cargo
     getAllCargoes(){
@@ -98,19 +102,19 @@ class TsDataService {
     //Favorites
 
     getAllFavoritesByUserId(id) {
-        return http.get(`/api/users/${id}/favourites`,{ headers: authHeader() });
+        return http.get(`/api/users/${id}/favorites`,{ headers: authHeader() });
     }
 
     getAllFavorites() {
-        return http.get(`/api/users/favourites`, { headers: authHeader() });
+        return http.get(`/api/users/favorites`, { headers: authHeader() });
     }
 
     getFavorite(user,favorite){
-        return http.get(`/api/users/${user}/favourites/${favorite}`, { headers: authHeader() });
+        return http.get(`/api/users/${user}/favorites/${favorite}`, { headers: authHeader() });
     }
 
     setFavorite(user,favorite){
-        return http.post(`/api/users/${user}/favourites/${favorite}`, { headers: authHeader() });
+        return http.post(`/api/users/${user}/favorites/${favorite}`, { headers: authHeader() });
     }
 
     //Blockeds
