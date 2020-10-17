@@ -4,9 +4,8 @@
   <v-app id="inspire">
   
     <v-navigation-drawer v-model="drawer" app clipped :src="bg">
-        <v-list dense nav class="py-0" v-if="currentUser" >
+        <v-list dense nav class="py-0" v-if= "this.$store.state.auth.user" >
           <v-list-item >
-            
             <v-list-item-avatar>
               <img src="https://randomuser.me/api/portraits/men/81.jpg">
             </v-list-item-avatar>
@@ -25,7 +24,7 @@
             </v-list-item-icon>
 
             <v-list-item-content>
-              <v-list-item-title e @click="redirectManager(item.route)">{{ item.title }}</v-list-item-title>
+              <v-list-item-title e @click= "redirectManager(item.route)">{{ item.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -42,17 +41,15 @@
     <v-app-bar app clipped-left >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title class="secondary--text" style="text-style:bold"></v-toolbar-title>
-      <v-card-title>
-        <span class="headline" >TropSmart</span>
-      </v-card-title>
+        <a class="navbar-brand">TropSmart</a> 
       <v-spacer></v-spacer>
-      <v-btn class="ml-5" dark large color="#007BFF" :to="{name: 'SignUp'}" v-if="!currentUser">
+      <v-btn class="ml-5" dark large color="#007BFF" :to="{name: 'SignUp'}" v-if="!this.currentUser()">
         <span class="mr-2" >Registrar</span>
         <v-icon>mdi-account</v-icon>
       </v-btn>
 
       <v-btn  class="ml-5" dark large color="#007BFF" ref="signInButtonRef" @click="signManager">
-        <span class="mr-2" v-if="currentUser">Cerrar Sesión</span>
+        <span class="mr-2" v-if= "this.$store.state.auth.user">Cerrar Sesión</span>
         <span class="mr-2" v-else>Ingresar</span>
       <v-icon>mdi-login</v-icon>
       </v-btn>
@@ -72,9 +69,7 @@
     name: 'App',
     components: {},
     computed: {
-      currentUser() {
-        return this.$store.state.auth.user;
-      },
+
       bg () {
         return this.background ? 'https://image.freepik.com/vector-gratis/tecnologia-interfaz-fondo-abstracto_5205-97.jpg' : undefined
       },
@@ -106,10 +101,13 @@
 
     }),
     created () {
+      console.log("created")
+      console.log("this.current user : ", this.$store.state.auth.user)
       this.$vuetify.theme.light = true
       this.currentUser? this.signInState = "Cerrar sesión": this.signInState = "Ingresar";
 
     },
+    //try to get difente behaviour from the same thisn
     mounted(){
       console.log("status : ",this.$store.state.status);
       if(this.$store.state.auth.user != undefined)
@@ -123,19 +121,26 @@
     },
     methods:{
         logout() {
-        this.$store.dispatch('auth/logout');
-        this.$router.push('/login');
-
+          this.$store.dispatch('auth/logout');
+          this.$router.push('/login');
+        },
+        currentUser() {
+          console.log("currentUser : ", this.$store.state.auth.user)
+        return this.$store.state.auth.user;
         },
         signManager() {
           if(this.currentUser){
-            console.log("signManager : ", this.currentUser);
+            console.log("signManager : ", this.$store.state.auth.user);
             this.logout();
           }
+          //enabled this  fofor shouting enviroment can increse the status fromr this enviroment development ulsnfa_
+          //setting this across platform guarantize the entire desemvolpment for run queries and 
+          //enusfa_eoaplf enalibnf form shout formartan dn next is transform this user into multiple instances from the same user 
+          //this.$router.push("/sign-in")
+          //shouting and develop for some reasons are quite disapointer because 
             this.$router.push("/sign-in")
             this.$refs.signInButtonRef.innerText = this.currentUser? this.signInState = "Cerrar sesión": this.signInState = "Ingresar";
             console.log("signInState : ",this.signInState)
-
         },
         refreshParent(variable) {
           console.log(variable)

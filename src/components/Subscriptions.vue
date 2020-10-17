@@ -25,14 +25,15 @@
                     </v-toolbar>
                     <template>
                         <v-data-table 
-                        :headers = "headers2"
+                        :headers = "headersPlan"
                         :items = "subscriptionPlans"
                         sort-by = "weight"
                         class = "elevation-12"
                         @click:row = "rowClick"
                         >
                             <template v-slot:[`item.actions`]="{ item }">
-                                <v-btn small class="warning" fab left="left" @click="selectPlan(item)">
+                                <v-btn small class="warning" left="left" @click="selectPlan(item)">
+                                    <span class="mr-2">Suscribirse</span>
                                     <v-icon> mdi-subdirectory-arrow-right </v-icon>
                                 </v-btn>
                             </template>
@@ -44,8 +45,8 @@
         </v-toolbar>
     </template>
     <template v-slot:[`item.actions`]="{ item }">
-        <v-btn small class="warning" fab left="left" @click="activePlan(item)">
-            Activar <v-icon mdi-subdirectory-arrow-right> </v-icon>
+        <v-btn small class="warning" left="left" @click="activePlan(item)">
+            <span class="mr-2"> Activar</span> <v-icon> mdi-check </v-icon>
         </v-btn>
     </template>
   </v-data-table> 
@@ -58,24 +59,25 @@ export default {
         SelectNewSubscription: false,
         subscriptionPlans: [],
         subscriptionDone: [],
-        headers: [
-            { text: 'Nombre', value: 'planName'},
+        headers:[
+            { text: 'Nombre', value: 'plan'},
             { text: 'Precio (S/.)', value: 'price'},
-            { text: 'Estado', value: 'subscriptionState'},
+            { text: 'Estado', value: 'state'},
             { text: 'Actions', value: 'actions', sorteable: false}
         ],
-        headers2:[
+        headersPlan:[
             { text: 'Nombre', value: 'planName'},
-            { text: 'Precio (S/.)', value: 'price'},
-            { text: 'Duración (días)', value: 'durationDays'},
+            { text: 'Duracion (días)', value: 'durationDays'},
+            { text: 'Precio', value: 'price'},
             { text: 'Actions', value: 'actions', sorteable: false}
-        ],
+        ]
     }),
     methods: {
         retrieveSubscriptionsDone() {
             TsDataService.getSubscriptionsDone(this.$store.state.auth.user.id)
             .then(response => {
                 this.subscriptionDone = response.data.resourceList;
+                console.log("response : ",response.data.resourceList)
             })
         },
         getPlanList() {
@@ -94,6 +96,7 @@ export default {
             .then(response => {
                 if(response.data.success == true)
                 {
+                    
                     console.log("You has been subscribed successfully");
                     this.retrieveSubscriptionsDone();
                 }

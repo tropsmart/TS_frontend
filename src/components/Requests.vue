@@ -45,13 +45,13 @@
             class="warning"
             fab
             left="left"
-            @click="editItem(item)">
+            @click= "editItem(item)">
             <v-icon> mdi-pencil </v-icon>
         </v-btn>
         <v-btn class="ml-5 error"
             small
             fab
-            @click="deleteItem(item)">
+            @click= "deleteItem(item)">
             <v-icon> mdi-delete </v-icon>
         </v-btn>
     </template>
@@ -121,6 +121,12 @@ export default {
           this.selectDriver.driverFirstName = this.cargoes.indexOf(item).driverFirstName 
           this.selectDriver.driverLastName = this.cargoes.indexOf(item).driverLastName
           this.dialog = true
+        },
+        editItem(data) {
+          console.log(data);
+        },
+        deleteItem(data) {
+          console.log(data);
         },
         close () {
           this.dialog = false

@@ -4,7 +4,9 @@
       :headers= "headers"
       :items="favorites"
       sort-by="weight"
+      @click:row="rowClick"
       class="elevation-12"
+      
     >
     <template v-slot:top>
       <v-toolbar flat color="white">
@@ -45,7 +47,7 @@
         <v-btn class="ml-5 error"
             small
             fab
-            @click="deleteItem(item)">
+            @click= "deleteItem(item)">
             <v-icon> mdi-delete </v-icon>
         </v-btn>
     </template>
@@ -86,6 +88,11 @@ export default {
       }
     },
     methods: {
+        rowClick: function (item, row) {      
+        row.select(true);
+        console.log(item);
+        //item  - selected item
+        },
         registerFavourite () {
             if(this.$ref.form.validate())
             {
@@ -103,7 +110,14 @@ export default {
           this.$router.push("Drivers")
         },
         deleteItem(item){
-          confirm(`Estas seguro que quieres eliminar a ${item.favourited} de tu lista de favoritos?`)
+          confirm(`Estas seguro que quieres eliminar a ${item.favourited} de tu lista de favoritos?`);
+          TsDataService.deleteFavoriteByUserIdAndFavoriteId(this.$store.state.auth.user.id, item.id)
+          .then(response => {
+            this.refreshList()
+            if(response.data.success == true)
+              alert("Favorito eliminado");
+            
+          })
         },
         refreshList() {
           this.retrieveFavourites();

@@ -120,13 +120,13 @@
             class="warning"
             fab
             left="left"
-            @click="editItem(item)">
+            @click= "editItem(item)">
             <v-icon> mdi-pencil </v-icon>
         </v-btn>
         <v-btn class="ml-5 error"
             small
             fab
-            @click="deleteItem(item)">
+            @click= "deleteItem(item)">
             <v-icon> mdi-delete </v-icon>
         </v-btn>
     </template>
@@ -165,7 +165,7 @@ export default {
                 bankName : '',
                 accountNumber : '',
                 swiftCode : '',
-                dni : '',
+                billingAdress : '',
             },
             items: [
                 'Visa',
@@ -183,7 +183,7 @@ export default {
                     this.paymentMethods = response.data.resourceList; 
                     console.log("Payment method : ",response.data.resourceList);
 
-                    TsDataService.getCustomerByUserId(this.$store.state.auth.user.id)
+                    TsDataService.getCustomerById(this.$store.state.auth.user.id)
                     .then(response => {
                         if(response.data.success == true)
                         {
@@ -219,7 +219,7 @@ export default {
 
             addPaymentMethod () {
                 console.log("press ",this.rechargeInput);
-                this.rechargeInput.dni= 75261979;
+                this.rechargeInput.billingAdress= "Av. Lost heroes 2212";
                 
                     TsDataService.addPaymentMethod(this.$store.state.auth.user.id, this.rechargeInput)
                     .then(response => {
@@ -235,6 +235,14 @@ export default {
                     })
                 
             },
+            editItem(data) {
+                console.log(data);
+            },
+
+            deleteItem(data) {
+                console.log(data);
+            },
+
             passSelection(data) {
                 this.rechargeInput.bankName = data
             },

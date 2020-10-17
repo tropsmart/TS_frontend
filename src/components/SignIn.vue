@@ -93,7 +93,6 @@ export default {
         { 
           TsDataService.login(this.signInInput)
           .then(response =>{
-            console.log("RRRRRResponse : ", response);
             if(response.success == true)
             {
               this.$store.dispatch('auth/login', response.resource)

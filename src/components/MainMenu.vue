@@ -19,9 +19,10 @@
                             -->
                             <v-row tile text dense dark v-if="rowVisible" color="white" group>
                                 <v-col><v-btn tile text dense dark color="white" group @click="select(1)">Cargos</v-btn></v-col>
-                                <v-col><v-btn v-if="this.$store.state.auth.user.role==1" tile text dense dark color="white" group @click="select(2)">Buscar</v-btn></v-col>
-                                <v-col><v-btn v-if="this.$store.state.auth.user.role==1" tile text dense dark color="white" group @click="select(3)">Favoritos</v-btn></v-col>
-                                <v-col><v-btn v-if="this.$store.state.auth.user.role==2" tile text dense dark color="white" group @click="select(4)">Reseñas</v-btn></v-col>
+                                <v-col><v-btn v-if= " this.currentUser.role==1" tile text dense dark color="white" group @click="select(2)">Buscar</v-btn></v-col>
+                                <v-col><v-btn v-if= " this.currentUser.role==1" tile text dense dark color="white" group @click="select(3)">Favoritos</v-btn></v-col>
+                                <v-col><v-btn v-if= " this.currentUser.role==2 " tile text dense dark color="white" group @click="select(4)">Reseñas</v-btn></v-col>
+                                 
                                 <v-col><v-btn tile text dense dark color="white" group @click="select(5)">Bloqueados</v-btn></v-col>
                                 <v-col><v-btn tile text dense dark color="white" group value="justify">Noticias</v-btn></v-col>
                             </v-row>
@@ -80,6 +81,7 @@ export default {
         dialog: false,
         valid: false,
         rowVisible:false,
+        currentUser: null,
         state: 0
     }),
     methods: {
@@ -95,6 +97,7 @@ export default {
         this.rowVisible = true;
         if(this.$store.state.auth.user != undefined)
         {
+            this.currentUser = this.$store.state.auth.user;
             console.log("store user : ",this.$store.state.auth.user)
         }
         else

@@ -22,7 +22,6 @@
                     v-model="signUpInput.firstName"
                     prepend-icon="mdi-account-plus-outline"
                     type="text"
-                    :counter="10"
                     :rules="nameRulesFN"
                     required
                     ></v-text-field>
@@ -31,7 +30,6 @@
                     label="Apellidos"
                     name="lastName"
                     v-model="signUpInput.lastName"
-                    :counter="10"
                     :rules="nameRulesLN"
                     prepend-icon="mdi-account-plus-outline"
                     type="text"
@@ -76,7 +74,7 @@
                   <v-checkbox
                     v-model="checkbox"
                     :rules="[v => !!v || 'You must agree to continue!']"
-                    label="Do you agree?"
+                    label="Aceptas los terminos y condiciones"
                     required
                 ></v-checkbox>
                 </v-form>

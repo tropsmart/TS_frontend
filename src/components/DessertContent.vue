@@ -62,13 +62,13 @@
           <v-icon
             small
             class="mr-2"
-            @click="editItem(props.item)"
+            @click= "editItem(props.item)"
           >
             edit
           </v-icon>
           <v-icon
             small
-            @click="deleteItem(props.item)"
+            @click= "deleteItem(props.item)"
           >
             delete
           </v-icon>

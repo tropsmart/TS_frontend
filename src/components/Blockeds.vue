@@ -45,7 +45,7 @@
         <v-btn class="ml-5 error"
             small
             fab
-            @click="deleteItem(item)">
+            @click= "deleteItem(item)">
             <v-icon> mdi-delete </v-icon>
         </v-btn>
     </template>
@@ -116,7 +116,14 @@ export default {
           this.$router.push("Drivers")
         },
         deleteItem(item){
-          confirm(`Estas seguro que quieres eliminar a ${item.blocked} de tu lista de favoritos?`)
+          confirm(`Estas seguro que quieres eliminar a ${item.favourited} de tu lista de favoritos?`);
+          TsDataService.deleteBlockedByUserIdAndFavoriteId(this.$store.state.auth.user.id, item.id)
+          .then(response => {
+            this.refreshList()
+            if(response.data.success == true)
+              alert("Favorito eliminado");
+            
+          })
         },
         refreshList() {
           this.retrieveBlockeds();

@@ -1,9 +1,7 @@
 import http from "../http-common";
 import authHeader from "@/services/auth-header";
 
-
 class TsDataService {
-
     //Data Service
     login(user) {
         return http.post(`/api/authentication/sign-in/`,{
@@ -35,6 +33,13 @@ class TsDataService {
             });
     }
 
+    getAllUsersDrivers() {
+        return http.get(`/api/users/drivers`, { headers: authHeader()})
+            .then(response => {
+                return response;
+            })
+    }
+
     getAllDrivers() {
         return http.get("api/drivers", { headers: authHeader() })
             .then(response => {
@@ -50,18 +55,18 @@ class TsDataService {
         return http.put(`/api/customers/${customerId}/credits/${credits}`, { headers: authHeader() });
     }
 
-    /*
-    getCustomerByUserId(userId) {
-        return http.get(`api/customers/users/${userId}`, { headers: authHeader() });
-    }*/
+    
+    getCustomerById(userId) {
+        return http.get(`api/customers/${userId}`, { headers: authHeader() });
+    }
 
     //Driver
 
-    /*
-    getDriverByUserId(userId) {
-        return http.get(`api/drivers/users/${userId}`, { headers: authHeader() });
+    
+    getDriverById(userId) {
+        return http.get(`api/drivers/${userId}`, { headers: authHeader() });
     }
-    */
+    
 
     //Cargo
     getAllCargoes(){
@@ -93,15 +98,21 @@ class TsDataService {
     }
 
     setCargoConfirmation(cargoId) {
-        return http.put(`/api/cargoes/${cargoId}/confirm`);
+        return http.put(`/api/cargoes/${cargoId}/confirms`);
     }
 
     setCargoDeliver(cargoId) {
         return http.put(`/api/cargoes/${cargoId}/deliver`);
     }
+
+    setCargoReject(cargoId) {
+        return http.put(`/api/cargoes/${cargoId}/reject`);
+    }
+
     //Favorites
 
     getAllFavoritesByUserId(id) {
+        console.log(`Runing /api/users/${id}/favorites`);
         return http.get(`/api/users/${id}/favorites`,{ headers: authHeader() });
     }
 
@@ -114,7 +125,14 @@ class TsDataService {
     }
 
     setFavorite(user,favorite){
+        console.log(`run /api/users/${user}/favorites/${favorite}`)
         return http.post(`/api/users/${user}/favorites/${favorite}`, { headers: authHeader() });
+    }
+
+    deleteFavoriteByUserIdAndFavoriteId(user, favorite)
+    {
+        console.log(`run /api/users/${user}/favorites/${favorite}`)
+        return http.delete(`/api/users/${user}/favorites/${favorite}`, { headers: authHeader() })
     }
 
     //Blockeds
@@ -124,66 +142,94 @@ class TsDataService {
     }
 
     getAllBlockeds() {
+        console.log(`runing /api/users/blockeds`)
         return http.get(`/api/users/blockeds`, { headers: authHeader() });
     }
 
     getBlocked(user,block) {
+        console.log(`runing /api/users/${user}/blockeds/${block}`)
         return http.get(`/api/users/${user}/blockeds/${block}`,{ headers: authHeader() });
     }
 
     setBlocked(user,block) {
-        return http.post(`/api/users/${user}/blockeds/${block}`,{ headers: authHeader() });
+        console.log(`runing /api/users/${user}/blockeds/${block}`)
+        return http.post(`/api/users/${user}/blockeds/${block}`, { headers: authHeader() });
     }
+
+    deleteBlockedByUserIdAndFavoriteId(user, blocked)
+    {
+        console.log(`run /api/users/${user}/blockeds/${blocked}`)
+        return http.delete(`/api/users/${user}/blockeds/${blocked}`,{ headers: authHeader() } )
+    }
+
 
     //Configurations
     getConfiguration(id) {
+        console.log(`runing api/configurations/users/${id}`)
         return http.get(`api/configurations/users/${id}`, {headers: authHeader() });
     }
 
-    updateConfiguration(id,config) {
+    updateConfiguration(id,config){
+        console.log(`runing api/configurations/users/${id}`)
         return http.put(`api/configurations/users/${id}`, JSON.stringify(config), { headers: authHeader() });
     }
 
 
     addPaymentMethod(userId, paymentMethodInput) {
+        console.log(`runing api/configurations/users/${userId}/payment-method`)
         return http.post(`api/configurations/users/${userId}/payment-method`, JSON.stringify(paymentMethodInput),{ headers: authHeader()});
     }
 
     getPaymentMethods(userId) {
+        console.log(`runing api/payment-methods/users/${userId}`)
         return http.get(`api/payment-methods/users/${userId}`,{ headers: authHeader()});
     }
 
     //Service
-    getService(userId) {
+    getServiceList(userId) {
+        console.log(`runing api/services/drivers/${userId}`)
         return http.get(`api/services/drivers/${userId}`, {headers: authHeader()});
     }
 
+    getSomeService(userId) {
+        console.log(`runing api/services/drivers/${userId}/some`)
+        return http.get(`api/services/drivers/${userId}/some`, {headers: authHeader()});
+    }
+
+
+
     //Reviews
     getReviewsByDriverId(userId){
+        console.log(`runing api/reviews/drivers/${userId}`)
         return http.get(`api/reviews/drivers/${userId}`,{ headers: authHeader()});
     }
 
     getReviewsByCustomerId(userId){
+        console.log(`api/reviews/customers/${userId}`)
         return http.get(`api/reviews/customers/${userId}`, {headers: authHeader()});
     }
 
     //Subscription
     
     getSubscriptionsDone(userId){
+        console.log(`runing api/subscriptions/users/${userId}`);
         return http.get(`api/subscriptions/users/${userId}`, {headers: authHeader()});
     }
 
     subscribeByUserIdAndPlanId(userId, planId){
+        console.log(`api/subscriptions/users/${userId}/plans/${planId}`);
         return http.post(`api/subscriptions/users/${userId}/plans/${planId}`,{headers: authHeader()});
     }
 
     activeSomeSubscriptionByUserIdAndPlanId(subscriptionId){
+        console.log(`enable api/subscriptions/${subscriptionId}/enable`)
         return http.put(`api/subscriptions/${subscriptionId}/enable`, {headers: authHeader()});
     }
 
     //Plans
 
     getPlanList(){
+        console.log("running api/plans")
         return http.get(`api/plans`, {headers: authHeader()});
     }
 

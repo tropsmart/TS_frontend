@@ -38,7 +38,7 @@
                         <v-card-text style="padding: 7px;"><div>Nombres : {{ currentDriver.firstName }}</div></v-card-text>
                         <v-card-text style="padding: 7px;"><div>Apellidos : {{ currentDriver.lastName }}</div></v-card-text>
                         <v-card-text style="padding: 7px;">
-                            <div v-if="currentDriver.role==1">Rol : Cliente</div>
+                            <div v-if = "currentDriver.role==1" >Rol : Cliente</div>
                             <div v-else>Rol : Conductor</div>
                         </v-card-text>
                     </v-container>
@@ -79,6 +79,14 @@
                         <v-col><v-text-field type="number" v-model="cargoInput.weight" label="Peso"></v-text-field></v-col> 
                     </v-container>
                     <v-divider class="mx-4"></v-divider>
+                    <v-card-title align="center" style="test-align: center; display:block">
+                        <div class="text-xs-center">Destino de la carga</div>
+                    </v-card-title>
+                     <v-card-subtitle align="center" style="test-align: center; display:block">
+                        <div class="text-xs-center">Ingrese la ubicación de destino de la carga</div>
+                     </v-card-subtitle>
+
+                    <v-divider class="mx-4"></v-divider>
 
                     <v-card-actions style="text-align: center;">
                         <v-container>
@@ -107,7 +115,7 @@
 <script>
 import TsDataService from '@/services/TsDataService'
 export default {
-    name: 'UserList',
+    name: 'UsersList',
     data: ()=>({
         dialog: false,
         dialogCargo: false,
@@ -172,25 +180,19 @@ export default {
                 this.currentIndex = -1;
         },
         requestCargoService() {
-            
-            //Obtener al driverId con el user del driver
-            TsDataService.getDriverByUserId(this.currentDriver.id)
-                .then(response => {
-                    console.log("getDriverByUserID : ",response);
-                    //Obtener el servicio con DriverId
-                    TsDataService.getService(response.data.resource.id)
+
+            // -> getdriverByUserId
+
+            TsDataService.getSomeService(this.currentDriver.roleId)
                         .then(response => {
-                            this.cargoInput.serviceId = response.data.resourceList[0].id;
-                            console.log("getService : ",response)
-                            //Obtain Customer
-                            TsDataService.getCustomerByUserId(this.$store.state.auth.user.id)
-                            .then(response => {
-                                console.log("getcustomerByUserId : ", response);
-                                console.log("cargoinput : ", this.cargoInput);
-                                TsDataService.setRequestCargo(response.data.resource.id ,this.cargoInput)
+                            console.log("getService : ", response);
+                            this.cargoInput.serviceId = response.data.resource.id;
+                            console.log("cargoInput : ", this.cargoInput);
+                            TsDataService.setRequestCargo(this.$store.state.auth.user.roleId ,this.cargoInput)
                                     .then(response => {
                                     if(response.data.success == true)
                                     {
+                                        console.log("set Request Cargo", response);
                                         this.rechargeSuccess = true; 
                                         console.log("cargo delivered");
                                     }
@@ -199,17 +201,14 @@ export default {
                                         this.noMoney = true;
                                     }
                                 })
-
-                            })
+                        
                         })
-
-                })
         },
         rowClick: function (item, row) {  
             row.select(true);
             this.currentDriver = row.item;
             this.dialog = true
-            console.log(this.currentDriver);
+            console.log("currentDriver",this.currentDriver);
         },
         editItem (item) {
             this.editedIndex = this.users.indexOf(item)
@@ -225,7 +224,8 @@ export default {
         },
         AddFavorites () {
             TsDataService.setFavorite(this.$store.state.auth.user.id,this.currentDriver.id)
-                .then( () => {
+                .then( response => {
+                    console.log("response", response);
                     console.log("Add favorites success");
                 })
         },

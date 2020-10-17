@@ -21,6 +21,7 @@
     "react-redux-loading-bar": "^5.0.0",
     "vee-validate": "^3.3.5",
     "vue": "^2.6.11",
+    "vue-browser-geolocation": "^1.8.0",
     "vue-router": "^3.2.0",
     "vuetify": "^2.2.11",
     "vuex": "^3.4.0"

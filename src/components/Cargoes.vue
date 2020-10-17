@@ -57,7 +57,7 @@
         </v-btn>
         <v-btn class="ml-5 error"
             small          
-            @click="deleteItem(item)">
+            @click="rejectItem(item)">
             <span class="mr-2">Descartar</span>
             <v-icon> mdi-delete </v-icon>
         </v-btn>
@@ -126,7 +126,6 @@ export default {
             }
         },
         retrieveCargoes() {
-
 
           TsDataService.getAllCargoesByCustomerId(this.$store.state.auth.user.roleId)
           .then(response => {
@@ -209,23 +208,32 @@ export default {
             this.currentCargo = row.item;
         },
         cargoManager(data) {
-          console.log(data);
-          if(data.cargoStatus == "Esperando confirmacion")
+          console.log("cargoManager : ",data);
+          if(data.cargoStatus == "Awaiting")
           {
+            console.log("setCargoCongirmation")
             TsDataService.setCargoConfirmation(data.id)
               .then(response => {
-                this.retrieveCargoesByDriver();
+                this.retrieveCargoes();
                 console.log("setCargoConfirmation response : ",response)
               })
           }
-          if(data.cargoStatus == "En proceso")
+          if(data.cargoStatus == "In process")
           {
+            console.log("setCargoDeliver")
             TsDataService.setCargoDeliver(data.id)
               .then(response => {
-                this.retrieveCargoesByDriver();
+                this.retrieveCargoes();
                 console.log("setCargoDeliver response : ",response)
               })
           }
+        },
+        rejectItem(data) {
+          TsDataService.setCargoReject(data.id)
+            .then(response => {
+              this.retrieveCargoes();
+              console.log("setCargoReject response : ",response)
+            })
         },
         redirectManager(path) {
           this.$router.push(path).catch(()=>{});
