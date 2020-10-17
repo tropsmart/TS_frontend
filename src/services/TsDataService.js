@@ -197,7 +197,6 @@ class TsDataService {
     }
 
 
-
     //Reviews
     getReviewsByDriverId(userId){
         console.log(`runing api/reviews/drivers/${userId}`)

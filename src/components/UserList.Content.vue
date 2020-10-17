@@ -162,20 +162,33 @@ export default {
             serviceId: '',
         },
         currentIndex: -1,
+        map: null,
         myCoordinates: {
-                lat: 0,
-                lng:0
-            },
-            zoom: 16,
+            lat: 0,
+            lng:0
+        },
+        zoom: 16,
         markers: [{
           position: {lat: 0, lng: 0},
-          title: 'test'}]
+          title: 'googleMapsAPI'}]
     }),
 
     computed: {
         formTitle () {
             return this.editedIndex === -1 ? 'New Item' : 'Informacion de conductor'
         },
+        mapCoordinates() {
+            if(!this.map) {
+                return {
+                    lat:0,
+                    lng:0
+                };
+            }
+            return {
+                lat: this.map.getCenter().lat().toFixed(4),
+                lng: this.map.getCenter().lng().toFixed(4)
+            }
+        }
     },
 
     watch: {
@@ -268,7 +281,17 @@ export default {
         },
         redirectManager(path) {
           this.$router.push(path).catch(()=>{});
-        }, 
+        },
+        handleDrag() {
+            let center = {
+                lat: this.map.getCenter().lat(),
+                lng: this.map.getCenter().lng()
+            }
+            let zoom = this.map.getZoom();
+            localStorage.center = JSON.stringify(center)
+            localStorage.zoom = zoom
+            this.map.markers[0].position = center
+        }
     },
     mounted() {
         if(this.$store.state.auth.user != undefined)
