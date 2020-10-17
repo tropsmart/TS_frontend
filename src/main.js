@@ -9,6 +9,8 @@ import router from './router'
 import store from './store'
 import * as VeeValidate from 'vee-validate';
 import vuetify from './plugins/vuetify';
+import * as VueGoogleMaps from "vue2-google-maps"
+import VueGeolocation from "vue-browser-geolocation"
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
@@ -25,6 +27,15 @@ Vue.component('Cargoes',Cargoes)
 Vue.component('Favorites',Favorites)
 Vue.component('Blockeds',Blockeds)
 Vue.component('Reviews',Reviews)
+
+Vue.use(VueGeolocation)
+
+Vue.use(VueGoogleMaps, {
+  load: {
+    key: 'AIzaSyBHCaJ3u8hCupAOseswZKBbanVyBZraJ1A'
+  }
+})
+
 
 new Vue({
   router,

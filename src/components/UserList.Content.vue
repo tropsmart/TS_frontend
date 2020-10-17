@@ -85,6 +85,24 @@
                      <v-card-subtitle align="center" style="test-align: center; display:block">
                         <div class="text-xs-center">Ingrese la ubicación de destino de la carga</div>
                      </v-card-subtitle>
+                    <v-divider class="mx-4"></v-divider>
+
+                         <gmap-map
+                            :center="myCoordinates"
+                            :zoom="zoom"
+                            style="width: 100%; height: 500px"
+                            ref="mapRef"
+                            >
+                            <gmap-marker
+                            :key="index"
+                            v-for="(m, index) in markers"
+                            :position="m.position"
+                            :title="m.title"
+                            :clickable="true"
+                            :draggable="true"
+                            @click="center=m.position"
+                            ></gmap-marker>
+                        </gmap-map>
 
                     <v-divider class="mx-4"></v-divider>
 
@@ -144,6 +162,14 @@ export default {
             serviceId: '',
         },
         currentIndex: -1,
+        myCoordinates: {
+                lat: 0,
+                lng:0
+            },
+            zoom: 16,
+        markers: [{
+          position: {lat: 0, lng: 0},
+          title: 'test'}]
     }),
 
     computed: {
@@ -180,9 +206,6 @@ export default {
                 this.currentIndex = -1;
         },
         requestCargoService() {
-
-            // -> getdriverByUserId
-
             TsDataService.getSomeService(this.currentDriver.roleId)
                         .then(response => {
                             console.log("getService : ", response);
@@ -256,10 +279,28 @@ export default {
         {
             this.redirectManager("sign-in");
         }
+    },
+    created() {
+
+        if(localStorage.center) {
+            this.myCoordinates = JSON.parse(localStorage.center);
+        } else {
+            this.$getLocation({}).
+                then(coordinates =>{
+                    this.myCoordinates = coordinates,
+                    this.markers.forEach(element => {
+                        element.position = coordinates 
+                    });
+                })
+        .catch(error => alert(error));
+
+        if(localStorage.zoom) {
+            this.zoom = localStorage.zoom;
+        }
+
+        }
     }
-
 }
-
 </script>
 
 
