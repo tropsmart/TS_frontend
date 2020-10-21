@@ -107,7 +107,7 @@
       this.currentUser? this.signInState = "Cerrar sesión": this.signInState = "Ingresar";
 
     },
-    //try to get difente behaviour from the same thisn
+    //try to get difente behaviour from the same this
     mounted(){
       console.log("status : ",this.$store.state.status);
       if(this.$store.state.auth.user != undefined)
