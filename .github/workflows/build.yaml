@@ -9,7 +9,7 @@ on:
       - 'master'
 
 jobs:
-  build:
+  continuous-integration:
     runs-on: ubuntu-latest
     steps:
 #      checkout
