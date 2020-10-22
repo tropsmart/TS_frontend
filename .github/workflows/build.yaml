@@ -18,7 +18,7 @@ jobs:
       - name: set up node
         uses: onekiloparsec/heroku-node-deploy-subfolder@v1.0.4
         with:
-          api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"#get
+          api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"#get api key
           email: "digihazard18@gmail.com"
           app_name: "ts-appsweb-fe"
           branch: "master"
