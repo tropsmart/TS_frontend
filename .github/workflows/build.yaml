@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - '**'
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+#      checkout
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: set up node
+      - uses: onekiloparsec/heroku-node-deploy-subfolder@v1.0.4
+        with:
+          api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"
+          email: "digihazard18@gmail.com"
+          app_name: "ts-appsweb-fe"
+          branch: "master"
+
+  continuous-delivery:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: deploy to heroku
+        uses: akhileshns/heroku-deploy@v3.5.6
+        with:
+          heroku_api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"
+          heroku_app_name: "ts-appsweb-fe"
+          heroku_email: "digihazard18@gmail.com"
