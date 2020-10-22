@@ -21,7 +21,6 @@ jobs:
           email: "digihazard18@gmail.com"
           app_name: "ts-appsweb-fe"
           branch: "master"
-        run: npm run test:unit
 
   #continuous-delivery:
   #  needs: build
