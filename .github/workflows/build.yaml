@@ -12,7 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-#      checkout
       - name: checkout
         uses: actions/checkout@v2
       - name: set up node
