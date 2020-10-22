@@ -9,14 +9,14 @@ on:
       - 'master'
 
 jobs:
-  continuous-integration:
+  build:
     runs-on: ubuntu-latest
     steps:
 #      checkout
       - name: checkout
         uses: actions/checkout@v2
       - name: set up node
-        uses: onekiloparsec/heroku-node-deploy-subfolder@v1.0.4
+      - uses: onekiloparsec/heroku-node-deploy-subfolder@v1.0.4
         with:
           api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"
           email: "digihazard18@gmail.com"
