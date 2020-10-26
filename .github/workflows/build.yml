@@ -41,9 +41,6 @@ jobs:
       - name: deploy to heroku production enviroment
         uses: akhileshns/heroku-deploy@v3.5.6
         with:
-          #heroku_api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"
-          #heroku_app_name: "ts-appsweb-fe"
-          #heroku_email: "digihazard18@gmail.com"
-          heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-          heroku_app_name: ${{ secrets.HEROKU_FRONTEND_APP }}
-          heroku_email: ${{ secrets.HEROKU_EMAIL }}
+          heroku_api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"
+          heroku_app_name: "ts-appsweb-fe"
+          heroku_email: "digihazard18@gmail.com"
