@@ -14,13 +14,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-      - name: set-sup node
-        uses: onekiloparsec/heroku-node-deploy-subfolder@v1.0.4
-        with:
-          api_key: "26e9942e-8c58-4c0f-a37c-c10936bf7835"#get api keys
-          email: "digihazard18@gmail.com"
-          app_name: "ts-appsweb-fe"
-          branch: "master"
       - run: npm install
       #Test
       - run: npm run test:unit
@@ -38,9 +31,7 @@ jobs:
           email: "tropsmart18@gmail.com"
           app_name: "ts-appsweb-dev"
           branch: "master"
-      - run: npm install
 
-      
   continuous-deployment:
     needs: continuous-integration
     runs-on: ubuntu-latest
