@@ -36,7 +36,7 @@
         <v-content>
         <router-view/>
       </v-content>
-
+    <!--Container-->
     <div class="v-content" fluid data-booted="true" style="padding: 56px 0xp 36px;">
     <v-app-bar app clipped-left >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
