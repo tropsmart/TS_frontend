@@ -85,8 +85,9 @@
                      <v-card-subtitle align="center" style="test-align: center; display:block">
                         <div class="text-xs-center">Ingrese la ubicación de destino de la carga</div>
                      </v-card-subtitle>
+                     
                     <v-divider class="mx-4"></v-divider>
-
+                        <!--
                          <gmap-map
                             :center="myCoordinates"
                             :zoom="zoom"
@@ -103,6 +104,9 @@
                             @click="center=m.position"
                             ></gmap-marker>
                         </gmap-map>
+                        -->
+
+                        <div id="map"></div>
 
                     <v-divider class="mx-4"></v-divider>
 
@@ -162,7 +166,6 @@ export default {
             serviceId: '',
         },
         currentIndex: -1,
-        map: null,
         myCoordinates: {
             lat: 0,
             lng:0
@@ -170,13 +173,17 @@ export default {
         zoom: 16,
         markers: [{
           position: {lat: 0, lng: 0},
-          title: 'googleMapsAPI'}]
+          title: 'googleMapsAPI'}],
+        map: null,
+        mapCenter: {lat: -12.150783236889403, lng: -76.97903089048967},
+        restaurant: {lat: -12.152482364978242, lng: -76.9764291478269},
     }),
 
     computed: {
         formTitle () {
             return this.editedIndex === -1 ? 'New Item' : 'Informacion de conductor'
         },
+        /*
         mapCoordinates() {
             if(!this.map) {
                 return {
@@ -189,6 +196,7 @@ export default {
                 lng: this.map.getCenter().lng().toFixed(4)
             }
         }
+        */
     },
 
     watch: {
@@ -282,6 +290,17 @@ export default {
         redirectManager(path) {
           this.$router.push(path).catch(()=>{});
         },
+        setMarker(Points, Label) {
+            const markers = new google.maps.Marker({
+                position: Points,
+                map: this.map,
+                label:{
+                    text:Label,
+                    color:"#FFF"
+                }
+            })
+        }
+        /*
         handleDrag() {
             let center = {
                 lat: this.map.getCenter().lat(),
@@ -292,6 +311,7 @@ export default {
             localStorage.zoom = zoom
             this.map.markers[0].position = center
         }
+        */
     },
     mounted() {
         if(this.$store.state.auth.user != undefined)
@@ -302,6 +322,10 @@ export default {
         {
             this.redirectManager("sign-in");
         }
+
+        this.initMap()
+        this.setMarker(this.mapCenter,"A")
+        this.setMarker(this.restaurant,"B")
     },
     created() {
 
@@ -322,6 +346,18 @@ export default {
         }
 
         }
+    },
+    initMap(){
+        this.map = new google.maps.Map(document.getElementById('map'),{
+            center: this.mapCenter, // the center of the map
+            zoom: true,
+            maxZoom: 20,
+            minZoom: 3,
+            streetViewControl: true,
+            mapTypeControl: true,
+            fullscreenControl: true,
+            zoomControl: true
+        })
     }
 }
 </script>

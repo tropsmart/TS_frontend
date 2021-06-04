@@ -32,7 +32,7 @@ Vue.use(VueGeolocation)
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyBHCaJ3u8hCupAOseswZKBbanVyBZraJ1A'
+    key: 'AIzaSyCBjrH92QUYFOFEp3sfnFB2GaWzTMZC26Q'
   }
 })
 
