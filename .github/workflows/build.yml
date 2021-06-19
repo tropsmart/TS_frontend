@@ -27,9 +27,9 @@ jobs:
       - name: deploy to heroku development enviroment
         uses: onekiloparsec/heroku-node-deploy-subfolder@v1.0.4
         with:
-          api_key: "53083cb5-e9d1-400f-9741-54fc664d0784"
-          email: "tropsmart18@gmail.com"
-          app_name: "ts-appsweb-dev"
+          api_key: ${{ secrets.DEV_API_KEY }}
+          app_name: ${{ secrets.DEV_APP_NAME }}
+          email: ${{ secrets.DEV_EMAIL }}
           branch: "master"
 
   continuous-deployment:
@@ -41,9 +41,9 @@ jobs:
       - name: deploy to heroku production enviroment
         uses: akhileshns/heroku-deploy@v3.5.6
         with:
-          heroku_api_key: "32e3f987-46ba-4559-b93b-281539bb2815"
-          heroku_app_name: "ts-appsweb-fe"
-          heroku_email: "digihazard18@gmail.com"
+          heroku_api_key: ${{ secrets.RELEASE_API_KEY }}
+          heroku_app_name: ${{ secrets.RELEASE_APP_NAME }}
+          heroku_email: ${{ secrets.RELEASE_EMAIL }}
 
 
 
