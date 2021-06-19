@@ -1,4 +1,11 @@
 <template>
+    <div>
+        <div class="row">
+            <v-text-field label="Buscar transportista" outlined clearable
+            name="login" type="text" class="pa-5" v-model="paramName"></v-text-field>
+            <v-btn color="blue darken-1" style="padding-top: 15px" text @click="searchDriverByName"><v-icon style="margin-right: 5px">mdi-account-search</v-icon>Solicitar servicio</v-btn>
+        </div>
+    
     <v-data-table
     :headers="headers"
     :items="users"
@@ -8,12 +15,16 @@
                 <v-overlay :value="overlay">
                 <v-progress-circular indeterminate size="64"></v-progress-circular>
                 </v-overlay>
+    
     <template v-slot:top>
         <v-toolbar flat color="white">
             <v-toolbar-title>Transportistas disponibles</v-toolbar-title>
             <v-divider class="mx-4" inset vertical></v-divider>
             <v-spacer></v-spacer>
-               
+    <div ref="map">
+        <input type="text" id="userName" ref="userName"/>
+    </div>
+
 
     <!-- DIALOG FOR INFORMATION FOR DRIVERS IN ANOTHER COMPONENT ===========================================================================================-->
             
@@ -59,9 +70,9 @@
 <!-- -->
     <!--DIALOG 2 FOR ADD CARGO =================================================================================================== -->
 
-            <v-dialog v-model="dialogCargo" max-width="500px">
+            <v-dialog id="dialog2" v-model="dialogCargo" ref="dialog2" max-width="500px">
     
-                <v-card style="border-radius:10px;">
+                <v-card id="carddialog2" ref="carddialog2" style="border-radius:10px;">
                         <v-alert type="success" v-model="rechargeSuccess" dismissible close-text="Close Alert">
                             Solicitud de cargo enviada exitosamente
                         </v-alert>
@@ -73,47 +84,48 @@
                     <v-card-title align="center" style="test-align: center; display:block">
                         <div class="text-xs-center">Nuevo cargo</div>
                     </v-card-title>
-                    <v-container align="center" style="padding: 5px; text-align: center;">
-                        <v-col><v-text-field v-model="cargoInput.description" label="Descripcion"></v-text-field></v-col> 
-                        <v-col><v-text-field type="number" v-model="cargoInput.servicePrice" label="Precio"></v-text-field></v-col> 
-                        <v-col><v-text-field type="number" v-model="cargoInput.weight" label="Peso"></v-text-field></v-col> 
-                    </v-container>
+                    <v-card-text>
+                        <v-form ref="form" v-model="valid" lazy-validation style="width:100%;">
+                            <v-text-field
+                                v-model="cargoInput.description"
+                                :rules="[v => !!v || 'Ingrese la descripcion del cargo']"
+                                label="Descripción"
+                                name="cargo"
+                                prepend-icon="mdi-account-details"
+                                type="text"
+                            ></v-text-field>
+                            <v-text-field
+                                v-model="cargoInput.servicePrice"
+                                :rules="[v => !!v || 'Ingrese el precio a solicitar']"
+                                label="Precio"
+                                name="cargo"
+                                prepend-icon="mdi-currency-usd"
+                                type="number"
+                                suffix="$"
+                            ></v-text-field>
+                            <v-text-field
+                                v-model="cargoInput.weight"
+                                :rules="[v => !!v || 'Ingrese el peso estimado del cargamento']"
+                                label="Peso estimado"
+                                name="cargo"
+                                prepend-icon="mdi-car-door-lock"
+                                type="number"
+                                suffix="Kg"
+                            ></v-text-field>
+                        </v-form>
+                    </v-card-text>
                     <v-divider class="mx-4"></v-divider>
-                    <v-card-title align="center" style="test-align: center; display:block">
-                        <div class="text-xs-center">Destino de la carga</div>
-                    </v-card-title>
-                     <v-card-subtitle align="center" style="test-align: center; display:block">
-                        <div class="text-xs-center">Ingrese la ubicación de destino de la carga</div>
-                     </v-card-subtitle>
-                     
-                    <v-divider class="mx-4"></v-divider>
-                        <!--
-                         <gmap-map
-                            :center="myCoordinates"
-                            :zoom="zoom"
-                            style="width: 100%; height: 500px"
-                            ref="mapRef"
-                            >
-                            <gmap-marker
-                            :key="index"
-                            v-for="(m, index) in markers"
-                            :position="m.position"
-                            :title="m.title"
-                            :clickable="true"
-                            :draggable="true"
-                            @click="center=m.position"
-                            ></gmap-marker>
-                        </gmap-map>
-                        -->
+                   
+                    
+                    <v-divider id="divider2" class="mx-4"></v-divider>
 
-                        <div id="map"></div>
-
+                    <GoogleMapsRoute ref="googleRoute"/>
                     <v-divider class="mx-4"></v-divider>
 
                     <v-card-actions style="text-align: center;">
                         <v-container>
-                            <v-btn color="blue darken-1" text @click="requestCargoService">Solicitar Servicio</v-btn>
-                            <v-btn color="blue darken-1" text @click="close">Volver</v-btn>
+                            <v-btn color="green darken-1" text @click="requestCargoService"><v-icon style="margin-right: 5px">mdi-book-check-outline</v-icon>Solicitar servicio</v-btn>
+                            <v-btn color="red darken-1" text @click="close2"><v-icon style="margin-right: 5px">mdi-backspace-outline</v-icon>Volver</v-btn>
                         </v-container>
                     </v-card-actions>
                 </v-card>
@@ -131,19 +143,27 @@
         </v-btn>
     </template>
     </v-data-table>
-
+    </div>
 </template>
 
 <script>
 import TsDataService from '@/services/TsDataService'
+import GoogleMapsRoute from './GoogleMapsRoute.vue'
 export default {
+    components: { GoogleMapsRoute },
+    directionsService: null,
+    directionsDisplay: null,
     name: 'UsersList',
     data: ()=>({
+        valid:false,
+        paramName: '',
         dialog: false,
+        totalDistance: 0,
+        totalTime: 0,
         dialogCargo: false,
         rechargeSuccess: false,
         noMoney: false,
-         overlay: false,
+        overlay: false,
         headers: [
             { text: 'FirstName', value: 'firstName' },
             { text: 'LastName', value: 'lastName' },
@@ -164,41 +184,26 @@ export default {
             description: '',
             servicePrice: '',
             serviceId: '',
+            arrivalAltitude: 0.0,
+            arrivalLatitude: 0.0,
+            arrivalLongitude: 0.0,
+            departureAltitude: 0.0,
+            departureLatitude: 0.0,
+            departureLongitude: 0.0
         },
         currentIndex: -1,
         myCoordinates: {
             lat: 0,
-            lng:0
+            lng: 0
         },
-        zoom: 16,
-        markers: [{
-          position: {lat: 0, lng: 0},
-          title: 'googleMapsAPI'}],
-        map: null,
-        mapCenter: {lat: -12.150783236889403, lng: -76.97903089048967},
-        restaurant: {lat: -12.152482364978242, lng: -76.9764291478269},
+        markers: []
     }),
-
     computed: {
         formTitle () {
             return this.editedIndex === -1 ? 'New Item' : 'Informacion de conductor'
         },
-        /*
-        mapCoordinates() {
-            if(!this.map) {
-                return {
-                    lat:0,
-                    lng:0
-                };
-            }
-            return {
-                lat: this.map.getCenter().lat().toFixed(4),
-                lng: this.map.getCenter().lng().toFixed(4)
-            }
-        }
-        */
+        google: ()=>window.google
     },
-
     watch: {
         dialog (val) {
             console.log(val)
@@ -208,7 +213,6 @@ export default {
               val || this.close()
         }
     },
-
     methods: {
         retrieveDrivers() {
             TsDataService.getAllDrivers()
@@ -227,9 +231,15 @@ export default {
                 this.currentIndex = -1;
         },
         requestCargoService() {
-            TsDataService.getSomeService(this.currentDriver.roleId)
+            if(this.$refs.form.validate())
+                {
+                    this.cargoInput.departureLatitude = this.$refs.googleRoute.$data.markers[0].position.lat
+                    this.cargoInput.departureLongitude = this.$refs.googleRoute.$data.markers[0].position.lng
+                    this.cargoInput.arrivalLatitude = this.$refs.googleRoute.$data.markers[1].position.lat
+                    this.cargoInput.arrivalLongitude = this.$refs.googleRoute.$data.markers[1].position.lng
+                    
+                    TsDataService.getSomeService(this.currentDriver.roleId)
                         .then(response => {
-                            console.log("getService : ", response);
                             this.cargoInput.serviceId = response.data.resource.id;
                             console.log("cargoInput : ", this.cargoInput);
                             TsDataService.setRequestCargo(this.$store.state.auth.user.roleId ,this.cargoInput)
@@ -247,6 +257,9 @@ export default {
                                 })
                         
                         })
+            
+                }
+            
         },
         rowClick: function (item, row) {  
             row.select(true);
@@ -285,33 +298,34 @@ export default {
                 this.editedIndex = -1
             })
         },
+        close2 () {
+            console.log("cargo2")
+            this.dialogCargo = false
+            this.$nextTick(() => {
+                this.editedIndex = -1
+            })
+        },
         save () { 
         },
         redirectManager(path) {
           this.$router.push(path).catch(()=>{});
         },
-        setMarker(Points, Label) {
-            const markers = new google.maps.Marker({
-                position: Points,
-                map: this.map,
-                label:{
-                    text:Label,
-                    color:"#FFF"
-                }
-            })
-        }
-        /*
-        handleDrag() {
-            let center = {
-                lat: this.map.getCenter().lat(),
-                lng: this.map.getCenter().lng()
+        searchDriverByName() {
+            if(this.paramName.length > 0)
+            {
+                TsDataService.searchDriverByName(this.paramName)
+                        .then(response => {
+                                    this.users = response.data.resourceList;
+                                    console.log(this.users);
+                                })
+                                .catch(e => {
+                                    console.log(e);
+                                });
+            } else {
+                this.retrieveDrivers();
             }
-            let zoom = this.map.getZoom();
-            localStorage.center = JSON.stringify(center)
-            localStorage.zoom = zoom
-            this.map.markers[0].position = center
+           
         }
-        */
     },
     mounted() {
         if(this.$store.state.auth.user != undefined)
@@ -322,43 +336,8 @@ export default {
         {
             this.redirectManager("sign-in");
         }
-
-        this.initMap()
-        this.setMarker(this.mapCenter,"A")
-        this.setMarker(this.restaurant,"B")
     },
-    created() {
-
-        if(localStorage.center) {
-            this.myCoordinates = JSON.parse(localStorage.center);
-        } else {
-            this.$getLocation({}).
-                then(coordinates =>{
-                    this.myCoordinates = coordinates,
-                    this.markers.forEach(element => {
-                        element.position = coordinates 
-                    });
-                })
-        .catch(error => alert(error));
-
-        if(localStorage.zoom) {
-            this.zoom = localStorage.zoom;
-        }
-
-        }
-    },
-    initMap(){
-        this.map = new google.maps.Map(document.getElementById('map'),{
-            center: this.mapCenter, // the center of the map
-            zoom: true,
-            maxZoom: 20,
-            minZoom: 3,
-            streetViewControl: true,
-            mapTypeControl: true,
-            fullscreenControl: true,
-            zoomControl: true
-        })
-    }
+    created() {}
 }
 </script>
 
@@ -366,5 +345,12 @@ export default {
 <style scoped>
   tr.v-data-table__selected {
     background: #3450dd !important;
+  }
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      margin: 0; 
   }
 </style>

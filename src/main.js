@@ -32,10 +32,10 @@ Vue.use(VueGeolocation)
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyCBjrH92QUYFOFEp3sfnFB2GaWzTMZC26Q'
+    key: 'AIzaSyCBjrH92QUYFOFEp3sfnFB2GaWzTMZC26Q',
+    libraries: 'geometry,drawing,places,visualization'
   }
 })
-
 
 new Vue({
   router,

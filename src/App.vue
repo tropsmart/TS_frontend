@@ -94,6 +94,7 @@
           { title: 'Landing Page', icon: 'mdi-view-dashboard', route: '/'},
           { title: 'Mi cuenta', icon: 'mdi-image', route: '/profile' },
           { title: 'Administrar subscripciones' , icon: 'mdi-currency-usd-circle', route: '/subscriptions'},
+          { title: 'Vehiculos disponibles', icon: 'mdi-car-2-plus', route: '/vehicles'},
           { title: 'Configuración', icon: 'mdi-help-box', route: '/settings' },
       ],
       color: 'primary',

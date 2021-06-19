@@ -25,8 +25,22 @@
                                 <v-text-field label="Teléfono" name="mobilePhone" v-model="settingsInput.phone" prepend-icon="mdi-phone" type="text" required></v-text-field> 
                                 <v-divider class="mx-4 my-5"></v-divider>
                                 <v-label class="ma-4">Configuracion de la cuenta</v-label>
-                                <v-text-field label="Lenguaje" name="language" v-model="settingsInput.language" prepend-icon="mdi-book-variant-multiple" type="text" required></v-text-field>
-                                <v-text-field label="Tipo de moneda" name="paymentCurrency" v-model="settingsInput.paymentCurrency" prepend-icon="mdi-bitcoin" type="text" required></v-text-field> 
+                                <v-text-field label="Lenguaje" name="language"  prepend-icon="mdi-book-variant-multiple" type="text" required></v-text-field>
+                                <v-text-field label="Tipo de moneda" name="paymentCurrency"  prepend-icon="mdi-bitcoin" type="text" required></v-text-field> 
+                                <v-combobox
+                                    v-model="settingsInput.language"
+                                    dense
+                                    outlined
+                                    :items="selectLanguage"
+                                    label="Lenguaje"
+                                ></v-combobox>
+                                <v-combobox
+                                    v-model="settingsInput.paymentCurrency"
+                                    dense
+                                    outlined
+                                    :items="selectPaymentCurrency"
+                                    label="Método de pago"
+                                ></v-combobox>
                               </v-form>
                           </v-card-text>
                         <v-divider class="mx-4"></v-divider>
@@ -67,8 +81,9 @@ export default {
         peopleInfoInput : {
             firstName: '',
             lastName: '',
-        }
-
+        },
+        selectLanguage: ['English','Spanish','Chinese','Germany',],
+        selectPaymentCurrency: ['Dollars','Sol','Bolívares',]
     }),
     methods: {
         retrieveSettings() {

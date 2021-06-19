@@ -8,6 +8,11 @@
     <template v-slot:top>
       <v-toolbar flat color="white">
         <v-toolbar-title>Sus cargos</v-toolbar-title>
+
+        <!--
+        <v-toolbar-title v-if="this.$store.state.auth.user.role == 1">Sus cargos</v-toolbar-title>
+        <v-toolbar-title v-if="this.$store.state.auth.user.role == 2">Solicitudes de cargos</v-toolbar-title>  
+         -->
         <v-divider class="mx-4" inset vertical ></v-divider>
             <v-spacer></v-spacer>
         <v-toolbar-items>
@@ -70,6 +75,7 @@
 export default {
     data: () => ({
         visible: false,
+        titleGlobal: '',
         roleUser : '',
         currentCargo: null,
         dialog:false,
@@ -126,12 +132,20 @@ export default {
             }
         },
         retrieveCargoes() {
-
-          TsDataService.getAllCargoesByCustomerId(this.$store.state.auth.user.roleId)
-          .then(response => {
-            this.cargoes = response.data.resourceList;
-            console.log(this.cargoes);
-          })
+          if(this.$store.state.auth.user.roleId == 1){
+            TsDataService.getAllCargoesByCustomerId(this.$store.state.auth.user.roleId)
+            .then(response => {
+              this.cargoes = response.data.resourceList;
+              console.log(this.cargoes);
+            })
+          } else {
+            TsDataService.getAllCargoesByDriverId(this.$store.state.auth.user.roleId)
+            .then(response => {
+              this.cargoes = response.data.resourceList;
+              console.log(this.cargoes)
+            })
+          }
+          
         },
 
 
@@ -208,7 +222,6 @@ export default {
             this.currentCargo = row.item;
         },
         cargoManager(data) {
-          console.log("cargoManager : ",data);
           if(data.cargoStatus == "Awaiting")
           {
             console.log("setCargoCongirmation")
@@ -240,12 +253,15 @@ export default {
         },  
     },
     mounted() {
-      //console.log("cargo in cargoes store user : ",this.$store.state)
       if(this.$store.state.auth.user != undefined)
       {
         this.setDynamicHeaders()
         this.visible = true;
         this.retrieveCargoes();
+        if(this.$store.state.auth.user.role == 1) 
+          this.titleGlobal = 'Sus cargos'
+        else
+          this.titleGlobal = 'Solicitudes de cargos' 
       }
       else 
       {

@@ -13,6 +13,7 @@ import Blockeds from '../components/Blockeds'
 import Settings from '../components/Settings'
 import Recharge from '../components/Recharge';
 import Subscriptions from '../components/Subscriptions';
+import Vehicles from '../components/Vehicles'
 
 Vue.use(VueRouter)
 
@@ -61,6 +62,11 @@ Vue.use(VueRouter)
     path: '/recharge',
     name: 'Recharge',
     component: Recharge
+  },
+  {
+    path: '/vehicles',
+    name: 'Vehicles',
+    component: Vehicles
   },
   {
     path: '/subscriptions',

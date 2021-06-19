@@ -54,8 +54,7 @@
 
             <div v-if=" this.state==1"><Cargoes></Cargoes></div>
             <div v-if=" this.state==2">
-                <v-text-field label="Buscar transportista" outlined clearable
-                name="login" type="text" class="pa-5"></v-text-field>
+               
                 <UserList></UserList>
             </div>
             <div v-if=" this.state==3"><Favorites></Favorites></div>

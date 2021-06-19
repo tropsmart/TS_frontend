@@ -46,6 +46,13 @@ class TsDataService {
                 return response;
             })
     }
+
+    searchDriverByName(paramName) {
+        return http.get(`api/drivers/param/${paramName}`, { headers: authHeader() })
+            .then(response => {
+                return response;
+            })
+    }
     getUser(id) {
         return http.get(`/api/users/${id}`, { headers: authHeader() });
     }
@@ -230,6 +237,19 @@ class TsDataService {
     getPlanList(){
         console.log("running api/plans")
         return http.get(`api/plans`, {headers: authHeader()});
+    }
+
+    //Vehicle
+
+    getVehicleByDriverId(driverId) {
+        console.log("running /api/vehicles/drivers/${driverId}")
+        return http.get(`/api/vehicles/drivers/${driverId}`, {headers: authHeader()})
+    }
+
+    registerVehicleByDriverId(driverId, vehicleInput) {
+        
+        return http.post(`/api/vehicles/drivers/${driverId}`,JSON.stringify(vehicleInput), {headers: authHeader()})
+
     }
 
 }

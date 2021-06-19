@@ -8,7 +8,8 @@
     >
     <template v-slot:top>
       <v-toolbar flat color="white">
-        <v-toolbar-title>Sus cargos</v-toolbar-title>
+        <v-toolbar-title v-if="this.$store.state.auth.user.role == 1">Sus cargos</v-toolbar-title>
+        <v-toolbar-title v-if="this.$store.state.auth.user.role == 2">Solicitudes de cargo</v-toolbar-title>
         <v-divider class="mx-4" inset vertical ></v-divider>
             <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="500px">
